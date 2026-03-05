@@ -36,11 +36,7 @@ export default function WorkClient({ projects, allTags }: WorkClientProps) {
   return (
     <>
       {/* Tag filter */}
-      <div
-        style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)', marginBottom: 'var(--space-12)' }}
-        role="group"
-        aria-label="Filter projects by tag"
-      >
+      <div className="tag-filter" role="group" aria-label="Filter projects by tag">
         <button
           className={`tag${!activeTag ? ' active' : ''}`}
           onClick={() => setActiveTag(null)}
@@ -63,21 +59,11 @@ export default function WorkClient({ projects, allTags }: WorkClientProps) {
       {filtered.length === 0 ? (
         <p style={{ color: 'var(--color-muted)' }}>No projects matching &ldquo;{activeTag}&rdquo;.</p>
       ) : (
-        <div
-          ref={gridRef}
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 340px), 1fr))',
-            gap: 'var(--space-gap)',
-          }}
-        >
+        <div ref={gridRef} className="bento-grid">
           {filtered.map((project) => (
             <div
               key={project.slug}
-              className="bento-appear"
-              style={{
-                gridColumn: project.span === 'wide' ? 'span 2' : 'span 1',
-              }}
+              className={`bento-appear${project.span === 'wide' ? ' bento-wide' : ''}`}
             >
               <ProjectCard project={project} />
             </div>

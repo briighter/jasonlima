@@ -15,7 +15,6 @@ import '@/styles/animations.css'
 const fraunces = Fraunces({
   subsets: ['latin'],
   axes: ['opsz', 'SOFT', 'WONK'],
-  weight: ['300', '400', '500', '700', '900'],
   style: ['normal', 'italic'],
   variable: '--font-fraunces',
   display: 'swap',

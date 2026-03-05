@@ -38,16 +38,7 @@ export default function BlogClient({ posts, allTags }: BlogClientProps) {
   return (
     <>
       {/* Tag filter bar */}
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 'var(--space-2)',
-          marginBottom: 'var(--space-12)',
-        }}
-        role="group"
-        aria-label="Filter posts by tag"
-      >
+      <div className="tag-filter" role="group" aria-label="Filter posts by tag">
         <button
           className={`tag${!activeTag ? ' active' : ''}`}
           onClick={() => setActiveTag(null)}
@@ -72,10 +63,7 @@ export default function BlogClient({ posts, allTags }: BlogClientProps) {
           No posts matching &ldquo;{activeTag}&rdquo;.
         </p>
       ) : (
-        <div
-          ref={listRef}
-          style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}
-        >
+        <div ref={listRef} className="post-list">
           {filtered.map((post, i) => (
             <PostRow key={post.slug} post={post} index={i} />
           ))}
