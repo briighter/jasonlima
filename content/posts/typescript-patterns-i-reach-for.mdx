@@ -1,0 +1,86 @@
+---
+title: "TypeScript Patterns I Actually Reach For"
+date: "2025-12-18"
+excerpt: "Not the clever tricks — the boring, readable patterns that appeared again and again across every large TypeScript codebase I've worked in."
+tags: ["typescript", "patterns", "engineering"]
+readTime: "8 min read"
+featured: false
+published: true
+---
+
+This isn't a list of TypeScript tricks. It's a list of the patterns that showed up,
+unprompted, in every large TypeScript codebase I've worked in or reviewed.
+
+## 1. Discriminated Unions for State Machines
+
+The moment you have state that can be in one of several distinct shapes,
+reach for a discriminated union instead of an object with optional fields.
+
+```typescript
+// Fragile: nullable fields leave room for invalid states
+type RequestState = {
+  loading: boolean
+  data?: User
+  error?: string
+}
+
+// Airtight: each state is distinct and exhaustive
+type RequestState =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: User }
+  | { status: 'error'; message: string }
+```
+
+TypeScript will force you to handle all cases when you switch on `status`.
+That's the feature.
+
+## 2. `satisfies` for Config Objects
+
+`satisfies` lets you validate a value against a type while preserving
+the literal type of the value itself.
+
+```typescript
+const routes = {
+  home:    '/',
+  blog:    '/blog',
+  contact: '/contact',
+} satisfies Record<string, string>
+
+// routes.home is typed as '/' (literal), not just string
+```
+
+## 3. Branded Types for IDs
+
+When you have multiple ID types (`userId`, `postId`, `orderId`), a plain `string`
+type won't stop you from accidentally passing the wrong one.
+
+```typescript
+type UserId  = string & { readonly __brand: 'UserId' }
+type PostId  = string & { readonly __brand: 'PostId' }
+
+function getUser(id: UserId): Promise<User> { ... }
+
+const postId = 'abc' as PostId
+getUser(postId) // ✕ TypeScript error — correct behavior
+```
+
+## 4. `Omit` + `Pick` in API Layers
+
+Rather than duplicating types between your DB model and API response,
+compose them.
+
+```typescript
+type UserRecord = { id: string; email: string; passwordHash: string; createdAt: Date }
+
+// Never expose passwordHash in API responses
+type UserPublic = Omit<UserRecord, 'passwordHash'>
+```
+
+## The Underlying Principle
+
+Good TypeScript isn't about making the type system do gymnastics. It's about
+encoding your domain's rules into types so the compiler can catch the bugs
+your brain misses at 11pm.
+
+Simple, explicit types. Discriminated unions. Avoid `any`. That's most of it.

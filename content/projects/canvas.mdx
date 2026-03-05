@@ -1,0 +1,22 @@
+---
+title: "Canvas"
+year: 2025
+description: "A collaborative whiteboard tool with real-time multiplayer, infinite canvas, and an extensible plugin architecture. Built to be fast at any zoom level."
+tags: ["TypeScript", "React", "WebSockets", "Canvas API"]
+url: "https://canvas.briighter.dev"
+github: "https://github.com/briighter/canvas"
+featured: true
+span: "normal"
+---
+
+Canvas started as a performance experiment — could you build a whiteboard that
+stays at 60fps regardless of element count?
+
+The answer: yes, with a quadtree-based culling system and aggressive use of
+`OffscreenCanvas` for worker thread rendering.
+
+## What this project taught me
+
+Building a collaborative editing tool forces you to confront the full complexity of
+distributed state. CRDTs, operational transforms, conflict resolution — theory meets
+practice fast when two cursors are fighting over the same element.

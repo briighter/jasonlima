@@ -1,0 +1,68 @@
+---
+title: "The Hidden Cost of 'Simple' Architecture Decisions"
+date: "2026-02-10"
+excerpt: "Every architecture decision you make in the first six months will still be there in year three. Here's how to think about the ones that compound."
+tags: ["engineering", "architecture", "systems"]
+readTime: "6 min read"
+featured: true
+published: true
+---
+
+Every architecture decision you make in the first six months of a project will still
+be there in year three. I've worked on enough codebases to know this with certainty.
+
+## The Compounding Problem
+
+When a system is small, almost anything works. A monolith is fine. A big `switch`
+statement is fine. Storing config in environment variables is fine.
+
+The problem is that these choices don't disappear — they become load-bearing walls.
+
+<Callout type="warning" title="The trap">
+The architecture that works perfectly at 1,000 users will actively fight you at 100,000.
+The question isn't whether to pay the complexity tax, only when.
+</Callout>
+
+## What Actually Compounds
+
+After auditing dozens of codebases, I've found three categories of decisions that
+compound the hardest:
+
+**1. Data model decisions**
+
+Your data model is the skeleton of your system. Feature pressure will cause you to
+add columns, nullable fields, and polymorphic associations. These are survivable.
+But the *shape* of your core entities — how you model users, how you handle
+multi-tenancy, how you represent relationships — almost never changes.
+
+**2. Authentication and identity**
+
+Auth touches everything. The decision to use sessions vs. JWTs, to roll your own
+vs. use a third-party, will echo through your codebase for years.
+
+**3. Synchronous vs. asynchronous processing**
+
+Starting synchronous is simpler. But retrofitting async (workers, queues, retries)
+into a sync-first system is genuinely painful.
+
+## The Heuristic I Use
+
+Before committing to a pattern, I ask: **"If this project gets 10x bigger, does
+this choice get better or worse?"**
+
+- A well-defined API boundary? Gets better — contracts stay stable.
+- Shared mutable database tables between services? Gets worse — coupling increases.
+- Centralized logging and tracing? Gets better — observability value rises.
+- Implicit conventions over documented contracts? Gets dramatically worse.
+
+<Callout type="tip" title="Practical rule">
+Optimize for reversibility. The decisions hardest to undo deserve the most scrutiny upfront.
+</Callout>
+
+## Closing Thought
+
+You won't get it all right. But the engineers who build systems that age well aren't
+necessarily smarter — they're just more deliberate about which decisions they're
+making permanent.
+
+Treat today's architecture like a letter to future-you. Make it legible.

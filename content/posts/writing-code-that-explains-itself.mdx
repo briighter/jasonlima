@@ -1,0 +1,71 @@
+---
+title: "On Writing Code That Explains Itself"
+date: "2026-01-22"
+excerpt: "Self-documenting code is not about avoiding comments — it's about making the code itself tell the story clearly enough that comments become optional."
+tags: ["craft", "readability", "engineering"]
+readTime: "4 min read"
+featured: true
+published: true
+---
+
+There's a category of code that makes me stop, re-read it, and think: *whoever wrote
+this actually cares*. It's not magic. It's just deliberate.
+
+## Comments Aren't the Story
+
+The usual advice is "write comments." That advice is incomplete at best.
+
+Comments can lie. They rot. A comment that was accurate six months ago might now
+describe behavior that no longer exists, pointing future-you confidently in the
+wrong direction.
+
+The code itself is always the source of truth.
+
+<Callout type="info" title="What self-documenting code actually is">
+It's not code that needs no explanation. It's code where the explanation is baked
+into the names, structure, and shape of the implementation itself.
+</Callout>
+
+## Three Moves That Changed My Code
+
+**Move 1: Name things after what they *mean*, not what they *are*.**
+
+```typescript
+// Poor: describes what it is
+const arr = users.filter(u => u.active)
+
+// Better: describes what it means
+const activeSubscribers = users.filter(u => u.active)
+```
+
+**Move 2: Extract conditionals into named predicates.**
+
+```typescript
+// Poor: logic buried in a condition
+if (user.createdAt < thirtyDaysAgo && user.loginCount < 2) { ... }
+
+// Better: the condition tells a story
+const isInactiveNewUser = user.createdAt < thirtyDaysAgo && user.loginCount < 2
+if (isInactiveNewUser) { ... }
+```
+
+**Move 3: Let the shape of your code reflect the shape of the domain.**
+
+A function called `processUserData` could do almost anything. A function called
+`hydrateUserSessionFromToken` does exactly one thing. Future readers know what
+to expect before reading the body.
+
+## When Comments Are Genuinely Valuable
+
+- **Why, not what.** The code shows what — comments should explain *why* you
+  made a non-obvious choice.
+- **Domain context.** Business rules that aren't apparent from code structure.
+- **Known tradeoffs.** "We're doing this the slow way because X. See issue #432."
+
+## The Test
+
+If a teammate unfamiliar with this file can read it top-to-bottom and understand
+*what it does and why*, the code is good. If they have to run it to understand it,
+it needs work.
+
+That's the standard. It's not always achievable. But it's always worth chasing.
