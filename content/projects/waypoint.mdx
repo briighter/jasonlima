@@ -1,0 +1,33 @@
+---
+title: "Waypoint"
+year: 2024
+description: "A personal knowledge base CLI that indexes your notes, code comments, and bookmarks into a local-first search engine. No cloud, no subscriptions."
+tags: ["Go", "SQLite", "CLI", "Full-text search"]
+github: "https://github.com/briighter/waypoint"
+featured: false
+span: "normal"
+---
+
+I had too many notes in too many places. Waypoint is the fix I built for myself.
+
+## How it works
+
+Run `wp index ~/notes ~/code` and Waypoint crawls your directories, extracts text
+(including code, markdown, and PDF), and builds an FTS5 index in SQLite.
+
+```bash
+wp search "authentication middleware"
+# Returns: ranked results across all indexed sources with file path and context snippet
+```
+
+The whole thing is a single Go binary. No daemon, no background process, no network
+calls. Install it and forget it.
+
+## What I learned
+
+Building a search index from scratch taught me more about information retrieval than
+any course. TF-IDF, BM25, tokenisation, stop words, stemming — all the pieces that
+Elasticsearch or Typesense hide from you.
+
+SQLite's FTS5 extension is underrated. For local-first search, it beats standing up
+any external service.

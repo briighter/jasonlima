@@ -1,0 +1,138 @@
+---
+title: "The Database Is Not Your Enemy"
+date: "2026-01-22"
+excerpt: "Most performance problems I've debugged trace back to application code — not the database. Here's how to stop blaming Postgres and start reading query plans."
+tags: ["engineering", "database", "performance"]
+readTime: "8 min read"
+featured: true
+published: true
+---
+
+The database gets blamed for a lot of things it didn't do.
+
+"Postgres is slow." "We need to add a cache." "Let's move this to Redis."
+
+Sometimes those are the right calls. But more often than not, the database is doing
+exactly what you asked — and what you asked for was inefficient.
+
+## The Misdiagnosis
+
+Here's the pattern I've seen more than once: a developer adds `console.time` around a
+slow endpoint, sees 400ms, assumes the database is the bottleneck, and reaches for a
+caching layer. The cache is added. The 400ms is gone. Six months later there are cache
+invalidation bugs, stale data in production, and two engineers are on a Slack call at
+11pm during an incident.
+
+The root cause was never explored.
+
+<Callout type="info" title="How to actually find the bottleneck">
+Before adding abstraction on top of slow code, run `EXPLAIN ANALYZE` on the query.
+The output will tell you exactly where the time is going.
+</Callout>
+
+## What EXPLAIN ANALYZE Tells You
+
+```sql
+EXPLAIN ANALYZE
+SELECT u.*, p.*
+FROM users u
+JOIN posts p ON p.author_id = u.id
+WHERE u.created_at > '2024-01-01';
+```
+
+The output includes:
+
+- **Seq Scan vs Index Scan** — a sequential scan on a million-row table costs you
+- **Rows Removed by Filter** — how many rows were read but thrown away
+- **Actual rows vs. predicted rows** — a large gap means stale statistics; run `ANALYZE`
+- **Nested Loop vs. Hash Join** — nested loops on unindexed joins are quadratic
+
+## The Index Is a Data Structure
+
+An index is a B-tree (or hash, or GiST, or...) maintained alongside your table.
+Writes become slightly more expensive. Reads on indexed columns become dramatically
+faster. The trade-off is almost always worth it for columns you filter or sort on.
+
+```sql
+-- Before checking whether an index exists:
+\d users
+
+-- Adding a partial index (only on active users — smaller, faster)
+CREATE INDEX CONCURRENTLY idx_users_created_active
+ON users (created_at)
+WHERE status = 'active';
+```
+
+`CONCURRENTLY` is your friend. It builds the index without locking the table for writes.
+
+## N+1 Is Everywhere
+
+The N+1 query is the most common source of slow endpoints I've seen. You fetch 20 posts,
+then loop through them and fetch the author for each one. You've just made 21 queries
+instead of 1.
+
+```typescript
+// ❌ N+1 — 1 query for posts, then 1 per author
+const posts = await db.query('SELECT * FROM posts LIMIT 20')
+for (const post of posts) {
+  post.author = await db.query('SELECT * FROM users WHERE id = $1', [post.author_id])
+}
+
+// ✅ Single join — 1 round trip
+const posts = await db.query(`
+  SELECT p.*, u.name as author_name, u.avatar as author_avatar
+  FROM posts p
+  JOIN users u ON u.id = p.author_id
+  LIMIT 20
+`)
+```
+
+ORM tools like Prisma and TypeORM have "eager loading" features (`include`, `relations`)
+that handle this, but you need to know to use them. And you should understand the SQL
+they generate.
+
+## Pagination That Actually Scales
+
+`OFFSET` pagination is simple to implement and breaks at scale.
+
+```sql
+-- ❌ OFFSET pagination — slow when offset is large
+SELECT * FROM posts ORDER BY created_at DESC LIMIT 20 OFFSET 10000;
+
+-- ✅ Keyset/cursor pagination — fast regardless of depth
+SELECT * FROM posts
+WHERE created_at < $lastSeen
+ORDER BY created_at DESC
+LIMIT 20;
+```
+
+With `OFFSET 10000`, Postgres reads 10,020 rows and discards 10,000 of them. Every time.
+With keyset pagination, it starts reading exactly where you left off.
+
+## When the Cache Is the Right Answer
+
+Sometimes caching is genuinely the right call:
+
+- **Expensive aggregations** computed from millions of rows that users need in real-time
+- **External API responses** you have no control over
+- **Computed results** that are expensive and rarely change (e.g., a user's follower count)
+
+But add the cache after you understand the query. Not before.
+
+<Callout type="tip" title="A useful heuristic">
+If you can't explain in plain English why a query is slow without looking at the query plan,
+you're not ready to cache it.
+</Callout>
+
+## What I Actually Check First
+
+When debugging a slow endpoint:
+
+1. **Is it actually the DB?** — Add timing spans around the query and the full handler separately
+2. **What does `EXPLAIN ANALYZE` say?** — Sequential scans and high row estimates are red flags
+3. **Are there missing indexes?** — Check the `WHERE`, `JOIN`, and `ORDER BY` columns
+4. **N+1?** — Count the queries hitting the DB for a single request
+5. **Connection pool exhausted?** — If queries are fast but the endpoint is slow, you may be waiting for a connection
+
+The database is usually doing exactly what you told it to do.
+Make sure you told it the right thing.

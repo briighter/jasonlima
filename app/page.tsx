@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import PostCard from '@/components/PostCard'
+import ProjectCard from '@/components/ProjectCard'
 import NewsletterForm from '@/components/NewsletterForm'
 import { getFeaturedPosts } from '@/lib/posts'
+import { getFeaturedProjects } from '@/lib/projects'
 
 export const metadata: Metadata = {
   title: 'Jason Lima — Software Engineer',
@@ -18,7 +20,8 @@ export const metadata: Metadata = {
    Sections: Hero → Marquee → About → Featured Posts → Newsletter
 ────────────────────────────────────────────────── */
 export default async function HomePage() {
-  const featuredPosts = await getFeaturedPosts(3)
+  const featuredPosts    = await getFeaturedPosts(3)
+  const featuredProjects = await getFeaturedProjects(4)
 
   return (
     <>
@@ -87,16 +90,16 @@ export default async function HomePage() {
 
               <div className="about__bio">
                 <p>
-                  I&apos;m a software engineer with roots in computer science from Eastern Connecticut
-                  State University and Southern New Hampshire University. I&apos;ve spent my career
-                  building systems that scale — from API infrastructure to product-facing features
-                  that real people use every day.
+                  I&apos;m a software engineer with a background in Computer Science and Business
+                  Information Systems. I build things that work—APIs, platforms, product features—
+                  and care deeply about the craft behind them: clean architecture, readable code,
+                  and systems that don’t fall apart at 3am.
                 </p>
                 <p>
-                  I care about the craft: clean code, thoughtful architecture, and the rare
-                  satisfaction of shipping something that genuinely works well. Outside the editor,
-                  I write about engineering, document my learning, and occasionally build things
-                  just to see if I can.
+                  Currently focused on full-stack web engineering with a strong lean toward
+                  TypeScript, React, and distributed systems. I also write about what I’m learning,
+                  document trade-offs I’ve wrestled with, and occasionally build things just to see
+                  if I can.
                 </p>
               </div>
 
@@ -133,7 +136,59 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── FEATURED POSTS ────────────────────────────────────────── */}
+      {/* ── SKILLS ──────────────────────────────────────────────── */}
+      <section className="section section--surface" id="skills" aria-labelledby="skills-heading">
+        <div className="container">
+          <p className="section-eyebrow">Expertise</p>
+          <h2 id="skills-heading" className="posts-section-title reveal" style={{ marginBottom: 'var(--space-12)' }}>
+            What I build with
+          </h2>
+          <div className="skills-grid">
+            {SKILL_GROUPS.map((group, i) => (
+              <div key={group.label} className="reveal" data-delay={String(i * 80)}>
+                <p className="skills-group-label">{group.label}</p>
+                <div className="skills-group-tags">
+                  {group.skills.map(skill => (
+                    <span key={skill} className="tag">{skill}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FEATURED WORK ────────────────────────────────────────── */}
+      {featuredProjects.length > 0 && (
+        <section className="section" id="work" aria-labelledby="work-heading">
+          <div className="container">
+            <div className="posts-section-header">
+              <div>
+                <p className="section-eyebrow">Work</p>
+                <h2 id="work-heading" className="posts-section-title reveal">
+                  Selected projects
+                </h2>
+              </div>
+              <Link href="/work" className="btn btn-ghost reveal" data-delay="100">
+                All projects →
+              </Link>
+            </div>
+            <div className="bento-grid">
+              {featuredProjects.map((project, i) => (
+                <div
+                  key={project.slug}
+                  className={`bento-appear${project.span === 'wide' ? ' bento-wide' : ''}`}
+                  data-delay={String(i * 80)}
+                >
+                  <ProjectCard project={project} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── FEATURED POSTS ─────────────────────────────────────────── */}
       {featuredPosts.length > 0 && (
         <section
           className="section section--surface"
@@ -180,13 +235,33 @@ export default async function HomePage() {
 const MARQUEE_ITEMS = [
   'TypeScript', 'React', 'Next.js', 'Node.js', 'PostgreSQL',
   'Go', 'Docker', 'AWS', 'System Design', 'API Architecture',
-  'Performance', 'Accessibility', 'Open Source',
+  'Accessibility', 'Performance', 'Open Source', 'CI/CD',
+  'Redis', 'Figma', 'REST', 'GraphQL',
 ]
 
 const STATS: { num: string; label: string }[] = [
   { num: '5+',  label: 'Years of experience'  },
   { num: '20+', label: 'Projects shipped'      },
   { num: '∞',   label: 'Things still to learn' },
+]
+
+const SKILL_GROUPS: { label: string; skills: string[] }[] = [
+  {
+    label: 'Frontend',
+    skills: ['React', 'Next.js', 'TypeScript', 'CSS / Tailwind', 'Accessibility'],
+  },
+  {
+    label: 'Backend',
+    skills: ['Node.js', 'Go', 'REST APIs', 'GraphQL', 'PostgreSQL', 'Redis'],
+  },
+  {
+    label: 'Infrastructure',
+    skills: ['AWS', 'Docker', 'CI/CD', 'Vercel', 'Linux'],
+  },
+  {
+    label: 'Design',
+    skills: ['System Design', 'UX / UI', 'Figma', 'Design Systems'],
+  },
 ]
 
 /* ── Inline icon — no external dep ───────────────────────────── */

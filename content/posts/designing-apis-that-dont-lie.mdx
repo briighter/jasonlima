@@ -1,0 +1,164 @@
+---
+title: "Designing APIs That Don't Lie"
+date: "2025-12-08"
+excerpt: "An API is a contract. When the contract is vague, everything downstream breaks — slowly and in ways that are hard to debug. Here's how I think about API design that actually holds up."
+tags: ["engineering", "api", "design"]
+readTime: "7 min read"
+featured: false
+published: true
+---
+
+An API is a contract between you and whoever calls your code.
+
+When the contract is precise, integrations are fast, bugs surface early, and systems
+compose cleanly. When the contract is vague, everything downstream breaks — slowly,
+confusingly, and in ways that are almost impossible to trace back to the source.
+
+I've worked with a lot of APIs. Here's what the good ones have in common.
+
+## Explicit Over Implicit
+
+The most basic principle: every behaviour your API has should be stated, not assumed.
+
+If a field can be `null`, say so. If a field can be absent, say so. If a list can be
+empty, demonstrate it. If an endpoint returns a subset of data versus all data,
+document the difference.
+
+```typescript
+// ❌ Lying by omission — what does null mean here?
+interface User {
+  id: string
+  name: string
+  avatar: string | null   // is this "not set yet" or "deleted"?
+  lastSeen: string        // is this ISO 8601? UTC? local?
+}
+
+// ✅ Explicit intent
+interface User {
+  id: string
+  name: string
+  /** URL to avatar image, or null if the user has not uploaded one */
+  avatarUrl: string | null
+  /** ISO 8601 UTC timestamp of last authenticated request */
+  lastSeenAt: string
+}
+```
+
+Documentation is part of the contract. That means types, JSDoc, and OpenAPI specs —
+pick your tools, but use them.
+
+## Error Responses Are First-Class Citizens
+
+Most API design attention goes to the happy path. The sad path is where the real work
+is.
+
+The best error taxonomy I've used:
+
+```typescript
+// A machine-readable error response
+interface ApiError {
+  code:    string          // stable, machine-readable, use for programmatic handling
+  message: string          // human-readable, for logging and display
+  details?: unknown        // optional structured context (validation errors, etc.)
+  traceId: string          // links this response to your observability layer
+}
+```
+
+`code` is the key piece. `RATE_LIMIT_EXCEEDED`, `INVALID_PAYMENT_METHOD`,
+`SESSION_EXPIRED` — these let the client handle specific cases without parsing strings.
+
+```typescript
+// ❌ String matching is fragile
+if (error.message.includes('not found')) { ... }
+
+// ✅ Code matching is stable
+if (error.code === 'RESOURCE_NOT_FOUND') { ... }
+```
+
+HTTP status codes matter too, but they're coarse. Use them correctly (`400` for
+client errors, `500` for server errors, `429` for rate limits) and then add the `code`
+for precision.
+
+<Callout type="warning" title="Never expose internal errors to clients">
+Stack traces, SQL errors, and internal service names are security leaks. Log them
+server-side, return a sanitised error with a trace ID to the client.
+</Callout>
+
+## Idempotency Is a Feature
+
+For any operation that isn't a pure read, think about idempotency from the start.
+
+Networks fail. Clients retry. If your `POST /orders` endpoint creates a duplicate order
+on a second call with the same body, you have a revenue bug disguised as a network quirk.
+
+The pattern:
+
+```typescript
+// Client generates an idempotency key
+const key = crypto.randomUUID()
+
+// POST /orders with Idempotency-Key header
+// The server stores (key → result) and returns the same result for repeated calls
+await fetch('/api/orders', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Idempotency-Key': key,
+  },
+  body: JSON.stringify(order),
+})
+```
+
+Stripe uses this pattern. Payments APIs without it are risky at scale.
+
+## Versioning Before You Need It
+
+You will need to break your API at some point. The question is how painful that is.
+
+My preference is URL versioning (`/v1/`, `/v2/`) for external APIs. It's verbose but
+legible: a client can pin to `/v1/` indefinitely and migrate to `/v2/` when ready.
+
+The rules I follow:
+
+- **Non-breaking changes** (adding a field, adding a new endpoint): safe to deploy
+- **Removing a field**: deprecate first — add `"deprecated": true` in the response metadata, give clients a migration window
+- **Changing semantics** (same field, different meaning): bump the version
+
+## The Contract Is Code
+
+The most durable way I've found to enforce API contracts is to make them executable.
+
+OpenAPI specs generate both documentation and validation middleware. TypeScript types
+are a contract the compiler enforces. Shared schema packages mean the same types live
+in the API server and the client.
+
+```typescript
+// api/schemas/user.ts — shared between server and client
+import { z } from 'zod'
+
+export const UserSchema = z.object({
+  id:         z.string().uuid(),
+  name:       z.string().min(1).max(100),
+  avatarUrl:  z.string().url().nullable(),
+  lastSeenAt: z.string().datetime(),
+})
+
+export type User = z.infer<typeof UserSchema>
+```
+
+When the schema changes, both sides know immediately — not at runtime during an
+integration test.
+
+## Fast Feedback for the Caller
+
+The last thing: how long does it take someone to understand your API from first
+contact?
+
+Good APIs have:
+- **A sandbox environment** that requires no setup to hit
+- **Error messages that say what to do**, not just what went wrong
+- **Example responses** in every documentation section
+- **Changelog** with migration notes (breaking changes, new capabilities)
+
+Treat your API like a product. Someone is going to use it at 11pm before a deadline.
+Make it easy for them.

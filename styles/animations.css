@@ -120,12 +120,11 @@
 }
 
 .marquee__item {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: var(--text-sm);
-  font-weight: var(--weight-light);
-  font-style: italic;
+  font-weight: var(--weight-medium);
   color: var(--color-muted);
-  letter-spacing: var(--tracking-wide);
+  letter-spacing: 0.3px;
   display: flex;
   align-items: center;
   gap: var(--space-8);
@@ -167,15 +166,15 @@
    ============================================================ */
 .hero-mesh {
   background:
-    radial-gradient(ellipse 70% 60% at 15% 80%, rgba(212, 98, 42, 0.08), transparent),
-    radial-gradient(ellipse 50% 50% at 80% 20%, rgba(212, 98, 42, 0.05), transparent),
-    var(--color-bg);
+    radial-gradient(ellipse 70% 60% at 10% 90%, rgba(60, 131, 246, 0.09), transparent),
+    radial-gradient(ellipse 50% 50% at 85% 15%, rgba(60, 131, 246, 0.06), transparent),
+    linear-gradient(160deg, #f2f2f3 0%, #e7f0fe 100%);
 }
 [data-theme="dark"] .hero-mesh {
   background:
-    radial-gradient(ellipse 70% 60% at 15% 80%, rgba(232, 120, 74, 0.10), transparent),
-    radial-gradient(ellipse 50% 50% at 80% 20%, rgba(232, 120, 74, 0.06), transparent),
-    var(--color-bg);
+    radial-gradient(ellipse 70% 60% at 10% 90%, rgba(60, 131, 246, 0.14), transparent),
+    radial-gradient(ellipse 50% 50% at 85% 15%, rgba(60, 131, 246, 0.08), transparent),
+    #111112;
 }
 
 

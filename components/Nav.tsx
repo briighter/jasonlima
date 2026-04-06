@@ -35,6 +35,7 @@ function MoonIcon() {
    Nav links config
 ────────────────────────────────────────────────── */
 const NAV_LINKS = [
+  { href: '/about',   label: 'About'   },
   { href: '/blog',    label: 'Blog'    },
   { href: '/work',    label: 'Work'    },
   { href: '/contact', label: 'Contact' },
@@ -139,8 +140,10 @@ export default function Nav() {
                 className="theme-toggle"
                 onClick={toggleTheme}
                 aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-                style={{ display: 'none' }} /* shown via JS on mobile */
-              />
+                style={{ display: 'flex' }}
+              >
+                {isDark ? <SunIcon /> : <MoonIcon />}
+              </button>
             )}
 
             <button

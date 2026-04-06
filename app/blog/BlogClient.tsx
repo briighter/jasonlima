@@ -89,99 +89,37 @@ function PostRow({ post, index }: { post: Post; index: number }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="reveal"
+      className="reveal post-row"
       data-delay={String(Math.min(index * 60, 300))}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{
-        display: 'grid',
-        gridTemplateColumns: '120px 1fr auto',
-        gap: 'var(--space-8)',
-        alignItems: 'center',
-        padding: 'var(--space-6) 0',
-        borderBottom: '1px solid var(--color-border)',
-        textDecoration: 'none',
-        transition: 'border-color var(--transition)',
-      }}
       aria-label={`Read: ${post.title}`}
     >
       {/* Date */}
       <time
         dateTime={post.date}
-        style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 'var(--text-xs)',
-          fontWeight: 500,
-          letterSpacing: 'var(--tracking-ultra)',
-          textTransform: 'uppercase',
-          color: 'var(--color-muted-light)',
-          whiteSpace: 'nowrap',
-          fontVariantCaps: 'small-caps',
-        }}
+        className="post-row__date"
       >
         {formattedDate}
       </time>
 
       {/* Title + excerpt */}
       <div>
-        <h3
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'var(--text-xl)',
-            fontWeight: 700,
-            letterSpacing: 'var(--tracking-tight)',
-            color: hovered ? 'var(--color-accent)' : 'var(--color-ink)',
-            transition: 'color var(--transition)',
-            marginBottom: 'var(--space-1)',
-          }}
-        >
+        <h3 className={`post-row__title${hovered ? ' post-row__title--hovered' : ''}`}>
           {post.title}
         </h3>
         {post.excerpt && (
-          <p
-            style={{
-              fontSize: 'var(--text-sm)',
-              color: 'var(--color-muted)',
-              lineHeight: 'var(--leading-snug)',
-              maxWidth: '60ch',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical' as const,
-              overflow: 'hidden',
-            }}
-          >
-            {post.excerpt}
-          </p>
+          <p className="post-row__excerpt">{post.excerpt}</p>
         )}
       </div>
 
       {/* Read time + arrow */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--space-4)',
-          flexShrink: 0,
-        }}
-      >
+      <div className="post-row__meta">
         {post.readTime && (
-          <span
-            style={{
-              fontSize: 'var(--text-xs)',
-              color: 'var(--color-muted-light)',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {post.readTime}
-          </span>
+          <span className="post-row__read-time">{post.readTime}</span>
         )}
         <span
-          style={{
-            color: hovered ? 'var(--color-accent)' : 'var(--color-muted)',
-            transform: hovered ? 'translateX(4px)' : 'translateX(0)',
-            transition: 'transform var(--transition), color var(--transition)',
-            display: 'flex',
-          }}
+          className={`post-row__arrow${hovered ? ' post-row__arrow--hovered' : ''}`}
           aria-hidden="true"
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

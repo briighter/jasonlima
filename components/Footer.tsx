@@ -53,12 +53,12 @@ const SOCIAL_LINKS: SocialLink[] = [
     icon:  <GitHubIcon />,
   },
   {
-    href:  'https://linkedin.com/in/jasonlima',
+    href:  'https://www.linkedin.com/in/jaylima0/',
     label: 'LinkedIn',
     icon:  <LinkedInIcon />,
   },
   {
-    href:  'https://twitter.com/briighter',
+    href:  'https://twitter.com/realjasonlima',
     label: 'X / Twitter',
     icon:  <TwitterIcon />,
   },

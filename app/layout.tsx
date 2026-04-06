@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import { Fraunces, DM_Sans } from 'next/font/google'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import ScrollReveal from '@/components/ScrollReveal'
@@ -7,26 +6,12 @@ import '@/styles/globals.css'
 import '@/styles/animations.css'
 
 /* ──────────────────────────────────────────────────
-   FONT LOADING — zero layout shift via next/font
-   Aesthetic: Refined Editorial
-   Display: Fraunces (optical-size variable font, italic for emphasis)
-   Body/UI: DM Sans (clean humanist grotesque)
+   FONTS: system-ui stack — zero download, zero layout
+   shift. Uniqueness comes from palette and layout.
+   macOS → SF Pro Display/Text
+   Windows → Segoe UI Variable
+   Android → Roboto
 ────────────────────────────────────────────────── */
-const fraunces = Fraunces({
-  subsets: ['latin'],
-  axes: ['opsz', 'SOFT', 'WONK'],
-  style: ['normal', 'italic'],
-  variable: '--font-fraunces',
-  display: 'swap',
-})
-
-const dmSans = DM_Sans({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-dm-sans',
-  display: 'swap',
-})
 
 /* ──────────────────────────────────────────────────
    METADATA — defaults; individual pages override
@@ -94,7 +79,6 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${dmSans.variable}`}
     >
       <head>
         {/* Synchronous dark mode — prevents FOUC */}
