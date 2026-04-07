@@ -14,7 +14,9 @@ export interface Project {
   url:         string
   github:      string
   featured:    boolean
-  span:        'normal' | 'wide'  // 'wide' spans 2 columns in bento grid
+  span:        'normal' | 'wide'
+  color:       string  // CSS token name: 'accent' | 'violet' | 'emerald' | 'orange' | 'rose' | 'amber'
+  category:    string  // Human-readable: 'Developer Tools', 'Infrastructure', etc.
   content:     string
 }
 
@@ -39,6 +41,8 @@ function parseProject(filename: string): Project {
     github:      data.github      ?? '',
     featured:    data.featured    ?? false,
     span:        data.span        ?? 'normal',
+    color:       data.color       ?? 'accent',
+    category:    data.category    ?? 'Project',
     content,
   }
 }

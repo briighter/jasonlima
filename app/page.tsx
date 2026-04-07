@@ -5,6 +5,7 @@ import ProjectCard from '@/components/ProjectCard'
 import NewsletterForm from '@/components/NewsletterForm'
 import { getFeaturedPosts } from '@/lib/posts'
 import { getFeaturedProjects } from '@/lib/projects'
+import type { Project } from '@/lib/projects'
 
 export const metadata: Metadata = {
   title: 'Jason Lima — Software Engineer',
@@ -12,51 +13,35 @@ export const metadata: Metadata = {
     'Software engineer, builder, and occasional writer. Work at the intersection of thoughtful engineering and clean product design.',
 }
 
-/* ──────────────────────────────────────────────────
-   HOME PAGE — Refined Editorial
-   Aesthetic direction: Refined Editorial (Fraunces + DM Sans)
-   All styles use CSS classes from globals.css /
-   animations.css — no inline styles.
-   Sections: Hero → Marquee → About → Featured Posts → Newsletter
-────────────────────────────────────────────────── */
 export default async function HomePage() {
   const featuredPosts    = await getFeaturedPosts(3)
-  const featuredProjects = await getFeaturedProjects(4)
+  const featuredProjects = await getFeaturedProjects(5)
+  const [heroProject, ...restProjects] = featuredProjects
 
   return (
     <>
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="hero hero-mesh grain-overlay" aria-labelledby="hero-heading">
         <div className="hero__inner">
-          {/* Eyebrow */}
           <p className="hero__eyebrow anim-fade-up anim-delay-0">
             Software Engineer
           </p>
-
-          {/* Headline — name in heavy Fraunces, descriptor light italic */}
           <h1 id="hero-heading" className="hero__headline anim-fade-up anim-delay-100">
             Jason <em>Lima.</em>
           </h1>
-
-          {/* Value proposition */}
           <p className="hero__description anim-fade-up anim-delay-200">
-            I build software that&apos;s precise, performant, and actually pleasant to use.
-            Currently focused on full-stack web engineering, distributed systems, and
-            writing about things I&apos;ve learned the hard way.
+            I build software that&apos;s precise, performant, and actually pleasant to use —
+            from distributed backends to polished product UIs.
           </p>
-
-          {/* CTAs */}
           <div className="hero__ctas anim-fade-up anim-delay-300">
             <Link href="/work" className="btn btn-primary">
-              View My Work
+              Browse My Apps
               <ArrowRightIcon />
             </Link>
             <Link href="/blog" className="btn btn-outline">
               Read the Blog
             </Link>
           </div>
-
-          {/* Decorative initials — the grid-breaking moment for the hero */}
           <span className="hero__monogram" aria-hidden="true">JL</span>
         </div>
       </section>
@@ -75,111 +60,34 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* ── ABOUT ─────────────────────────────────────────────────── */}
-      <section className="section" id="about" aria-labelledby="about-heading">
-        <div className="container">
-          <div className="about-grid">
-            {/* Left col — bio text, 3fr */}
-            <div className="reveal">
-              <p className="section-eyebrow">About</p>
-
-              <h2 id="about-heading" className="about__headline">
-                Engineer by trade,{' '}
-                <em>builder by instinct.</em>
-              </h2>
-
-              <div className="about__bio">
-                <p>
-                  I&apos;m a software engineer with a background in Computer Science and Business
-                  Information Systems. I build things that work—APIs, platforms, product features—
-                  and care deeply about the craft behind them: clean architecture, readable code,
-                  and systems that don’t fall apart at 3am.
-                </p>
-                <p>
-                  Currently focused on full-stack web engineering with a strong lean toward
-                  TypeScript, React, and distributed systems. I also write about what I’m learning,
-                  document trade-offs I’ve wrestled with, and occasionally build things just to see
-                  if I can.
-                </p>
-              </div>
-
-              <div className="about__actions">
-                <Link href="/work" className="btn btn-outline">
-                  View projects
-                </Link>
-                <a href="mailto:jason@example.com" className="btn btn-ghost">
-                  Say hello →
-                </a>
-              </div>
-            </div>
-
-            {/* Right col — stats card with decorative numeral, 2fr */}
-            <div className="about__stats-wrap reveal" data-delay="200">
-              <div className="about__stats-card">
-                {/* Large numeral behind content — grid-breaking decoration */}
-                <span className="about__stats-deco" aria-hidden="true">01</span>
-
-                <div className="about__stats-inner">
-                  {STATS.map(({ num, label }) => (
-                    <div key={label} className="about__stat">
-                      <span className="about__stat-num">{num}</span>
-                      <span className="about__stat-label">{label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Floating accent circle breaks out of the card boundary */}
-              <div className="about__circle-deco" aria-hidden="true" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── SKILLS ──────────────────────────────────────────────── */}
-      <section className="section section--surface" id="skills" aria-labelledby="skills-heading">
-        <div className="container">
-          <p className="section-eyebrow">Expertise</p>
-          <h2 id="skills-heading" className="posts-section-title reveal" style={{ marginBottom: 'var(--space-12)' }}>
-            What I build with
-          </h2>
-          <div className="skills-grid">
-            {SKILL_GROUPS.map((group, i) => (
-              <div key={group.label} className="reveal" data-delay={String(i * 80)}>
-                <p className="skills-group-label">{group.label}</p>
-                <div className="skills-group-tags">
-                  {group.skills.map(skill => (
-                    <span key={skill} className="tag">{skill}</span>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── FEATURED WORK ────────────────────────────────────────── */}
-      {featuredProjects.length > 0 && (
-        <section className="section" id="work" aria-labelledby="work-heading">
+      {/* ── FEATURED APP (App of the Day) ─────────────────────────── */}
+      {heroProject && (
+        <section className="section" aria-labelledby="featured-app-heading">
           <div className="container">
-            <div className="posts-section-header">
+            <p className="section-eyebrow">Featured Project</p>
+            <FeaturedAppBanner project={heroProject} />
+          </div>
+        </section>
+      )}
+
+      {/* ── APP GRID ──────────────────────────────────────────────── */}
+      {restProjects.length > 0 && (
+        <section className="section section--surface" aria-labelledby="apps-heading">
+          <div className="container">
+            <div className="store-section-header">
               <div>
-                <p className="section-eyebrow">Work</p>
-                <h2 id="work-heading" className="posts-section-title reveal">
-                  Selected projects
+                <p className="section-eyebrow">My Projects</p>
+                <h2 id="apps-heading" className="store-section-title reveal">
+                  All apps &amp; tools
                 </h2>
               </div>
               <Link href="/work" className="btn btn-ghost reveal" data-delay="100">
-                All projects →
+                See all →
               </Link>
             </div>
-            <div className="bento-grid">
-              {featuredProjects.map((project, i) => (
-                <div
-                  key={project.slug}
-                  className={`bento-appear${project.span === 'wide' ? ' bento-wide' : ''}`}
-                  data-delay={String(i * 80)}
-                >
+            <div className="app-grid">
+              {restProjects.map((project, i) => (
+                <div key={project.slug} className="reveal" data-delay={String(i * 80)}>
                   <ProjectCard project={project} />
                 </div>
               ))}
@@ -188,29 +96,55 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ── FEATURED POSTS ─────────────────────────────────────────── */}
+      {/* ── ABOUT (compact) ───────────────────────────────────────── */}
+      <section className="section" id="about" aria-labelledby="about-heading">
+        <div className="container">
+          <div className="about-strip reveal">
+            <div className="about-strip__text">
+              <p className="section-eyebrow">About</p>
+              <h2 id="about-heading" className="about-strip__headline">
+                Engineer by trade,{' '}<em>builder by instinct.</em>
+              </h2>
+              <p className="about-strip__bio">
+                I&apos;m a software engineer with a background in CS and Business
+                Information Systems. I build things that work — APIs, platforms,
+                product features — and care about the craft behind them: clean
+                architecture, readable code, and systems that don&apos;t fall apart at 3am.
+              </p>
+              <div className="about-strip__actions">
+                <Link href="/about" className="btn btn-outline">Read more →</Link>
+              </div>
+            </div>
+            <div className="about-strip__stats reveal" data-delay="150">
+              {STATS.map(({ num, label }) => (
+                <div key={label} className="about-strip__stat">
+                  <span className="about-strip__stat-num">{num}</span>
+                  <span className="about-strip__stat-label">{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── WRITING (editorial cards) ─────────────────────────────── */}
       {featuredPosts.length > 0 && (
-        <section
-          className="section section--surface"
-          id="writing"
-          aria-labelledby="posts-heading"
-        >
+        <section className="section section--surface" id="writing" aria-labelledby="posts-heading">
           <div className="container">
-            <div className="posts-section-header">
+            <div className="store-section-header">
               <div>
                 <p className="section-eyebrow">Writing</p>
-                <h2 id="posts-heading" className="posts-section-title reveal">
-                  Recent essays &amp; notes
+                <h2 id="posts-heading" className="store-section-title reveal">
+                  Latest from the blog
                 </h2>
               </div>
               <Link href="/blog" className="btn btn-ghost reveal" data-delay="100">
                 All posts →
               </Link>
             </div>
-
-            <div className="posts-grid">
+            <div className="editorial-grid">
               {featuredPosts.map((post, i) => (
-                <div key={post.slug} className="reveal" data-delay={String(i * 100)}>
+                <div key={post.slug} className="reveal" data-delay={String(i * 80)}>
                   <PostCard post={post} />
                 </div>
               ))}
@@ -219,8 +153,8 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ── NEWSLETTER CTA ────────────────────────────────────────── */}
-      <section className="section" id="newsletter" aria-labelledby="newsletter-heading">
+      {/* ── NEWSLETTER ────────────────────────────────────────────── */}
+      <section className="section" id="newsletter">
         <div className="container">
           <div className="reveal">
             <NewsletterForm />
@@ -228,6 +162,57 @@ export default async function HomePage() {
         </div>
       </section>
     </>
+  )
+}
+
+/* ──────────────────────────────────────────────────
+   FeaturedAppBanner — "App of the Day" editorial card
+────────────────────────────────────────────────── */
+function FeaturedAppBanner({ project }: { project: Project }) {
+  const color = project.color || 'accent'
+  const cssVars = {
+    '--app-color':      `var(--color-${color})`,
+    '--app-color-dim':  `var(--color-${color}-dim)`,
+    '--app-color-glow': `var(--color-${color}-glow)`,
+  } as React.CSSProperties
+
+  return (
+    <div className="featured-banner reveal" style={cssVars} id="featured-app-heading">
+      <div className="featured-banner__body">
+        <div className="featured-banner__icon-row">
+          <div className="featured-banner__icon" aria-hidden="true">
+            <span>{project.title[0]}</span>
+          </div>
+          <div>
+            <h2 className="featured-banner__title">{project.title}</h2>
+            <p className="featured-banner__sub">{project.category} · {project.year}</p>
+          </div>
+        </div>
+        <p className="featured-banner__desc">{project.description}</p>
+        <div className="featured-banner__tags">
+          {project.tags.map(tag => (
+            <span key={tag} className="featured-banner__tag">{tag}</span>
+          ))}
+        </div>
+        <div className="featured-banner__actions">
+          {project.url && (
+            <a href={project.url} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+              Open App ↗
+            </a>
+          )}
+          {project.github && (
+            <a href={project.github} target="_blank" rel="noopener noreferrer" className="btn btn-outline">
+              GitHub
+            </a>
+          )}
+        </div>
+      </div>
+      <div className="featured-banner__deco" aria-hidden="true">
+        <div className="featured-banner__deco-icon">
+          {project.title[0]}
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -240,46 +225,17 @@ const MARQUEE_ITEMS = [
 ]
 
 const STATS: { num: string; label: string }[] = [
-  { num: '5+',  label: 'Years of experience'  },
-  { num: '20+', label: 'Projects shipped'      },
-  { num: '∞',   label: 'Things still to learn' },
+  { num: '5+',  label: 'Years shipping' },
+  { num: '20+', label: 'Projects built'  },
+  { num: '∞',   label: 'Still learning'  },
 ]
 
-const SKILL_GROUPS: { label: string; skills: string[] }[] = [
-  {
-    label: 'Frontend',
-    skills: ['React', 'Next.js', 'TypeScript', 'CSS / Tailwind', 'Accessibility'],
-  },
-  {
-    label: 'Backend',
-    skills: ['Node.js', 'Go', 'REST APIs', 'GraphQL', 'PostgreSQL', 'Redis'],
-  },
-  {
-    label: 'Infrastructure',
-    skills: ['AWS', 'Docker', 'CI/CD', 'Vercel', 'Linux'],
-  },
-  {
-    label: 'Design',
-    skills: ['System Design', 'UX / UI', 'Figma', 'Design Systems'],
-  },
-]
-
-/* ── Inline icon — no external dep ───────────────────────────── */
 function ArrowRightIcon() {
   return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <line x1="5" y1="12" x2="19" y2="12" />
       <polyline points="12 5 19 12 12 19" />
     </svg>
   )
 }
+

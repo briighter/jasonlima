@@ -10,8 +10,8 @@ interface WorkClientProps {
 }
 
 /* ──────────────────────────────────────────────────
-   Work page — bento grid with tag filter
-   Wide projects span 2 columns; normal span 1
+   WorkClient — App Store-style browse page
+   Featured banner + category filter + app grid
 ────────────────────────────────────────────────── */
 export default function WorkClient({ projects, allTags }: WorkClientProps) {
   const [activeTag, setActiveTag] = useState<string | null>(null)
@@ -22,23 +22,28 @@ export default function WorkClient({ projects, allTags }: WorkClientProps) {
     [projects, activeTag]
   )
 
-  // Scroll reveal for bento cards
+  // Unique categories from ALL projects (not filtered)
+  const categories = useMemo(
+    () => [...new Set(projects.map(p => p.category).filter(Boolean))].sort(),
+    [projects]
+  )
+
   useEffect(() => {
     if (!gridRef.current) return
     const observer = new IntersectionObserver(
       entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('in-view')),
-      { threshold: 0.08 }
+      { threshold: 0.06 }
     )
-    gridRef.current.querySelectorAll('.bento-appear').forEach(el => observer.observe(el))
+    gridRef.current.querySelectorAll('.reveal').forEach(el => observer.observe(el))
     return () => observer.disconnect()
   }, [filtered])
 
   return (
     <>
-      {/* Tag filter */}
-      <div className="tag-filter" role="group" aria-label="Filter projects by tag">
+      {/* ── Category pills ── */}
+      <div className="store-category-row" role="group" aria-label="Filter by category">
         <button
-          className={`tag${!activeTag ? ' active' : ''}`}
+          className={`store-cat${!activeTag ? ' active' : ''}`}
           onClick={() => setActiveTag(null)}
         >
           All
@@ -46,7 +51,7 @@ export default function WorkClient({ projects, allTags }: WorkClientProps) {
         {allTags.map(tag => (
           <button
             key={tag}
-            className={`tag${activeTag === tag ? ' active' : ''}`}
+            className={`store-cat${activeTag === tag ? ' active' : ''}`}
             onClick={() => setActiveTag(prev => prev === tag ? null : tag)}
             aria-pressed={activeTag === tag}
           >
@@ -55,15 +60,16 @@ export default function WorkClient({ projects, allTags }: WorkClientProps) {
         ))}
       </div>
 
-      {/* Bento grid */}
+      {/* ── App grid ── */}
       {filtered.length === 0 ? (
-        <p style={{ color: 'var(--color-muted)' }}>No projects matching &ldquo;{activeTag}&rdquo;.</p>
+        <p className="store-empty">No projects matching &ldquo;{activeTag}&rdquo;.</p>
       ) : (
-        <div ref={gridRef} className="bento-grid">
-          {filtered.map((project) => (
+        <div ref={gridRef} className="app-grid">
+          {filtered.map((project, i) => (
             <div
               key={project.slug}
-              className={`bento-appear${project.span === 'wide' ? ' bento-wide' : ''}`}
+              className="reveal"
+              data-delay={String(Math.min(i * 60, 240))}
             >
               <ProjectCard project={project} />
             </div>
