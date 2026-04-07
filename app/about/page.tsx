@@ -60,48 +60,58 @@ const VALUES = [
 export default function AboutPage() {
   return (
     <main className="about-page">
-      {/* ── Hero ── */}
-      <section className="about-hero">
+      {/* ── Header ── */}
+      <header className="about-header section section--dark">
         <div className="container">
-          <div className="about-hero__inner">
-            <div className="about-hero__text">
-              <p className="section-eyebrow">About me</p>
-              <h1 className="about-hero__title">
-                I build software — and care about <em>how</em> it&apos;s built.
-              </h1>
-              <p className="about-hero__bio">
-                I&apos;m Jason Lima, a software engineer focused on full-stack product work.
-                I care about clean architecture, clear communication, and shipping things that
-                actually matter to people. I&apos;ve worked across the stack — from
-                hand-tuned SQL to pixel-level UI — and learned that the best engineers
-                understand the whole system.
+          <span className="eyebrow">{'// 03'} &mdash; about</span>
+          <h1 className="section-title" style={{ color: 'var(--color-dk-ink)', marginTop: 'var(--sp-3)', maxWidth: '18ch' }}>
+            I build software &mdash; and care about <em style={{ color: 'var(--color-accent)' }}>how</em> it&apos;s built.
+          </h1>
+          <p style={{ color: 'var(--color-dk-muted)', fontFamily: 'var(--font-body)', fontSize: 'var(--t-lg)', maxWidth: '560px', marginTop: 'var(--sp-5)', lineHeight: 1.65 }}>
+            Jason Lima. Full-stack engineer focused on clean architecture,
+            clear communication, and shipping software that actually matters.
+          </p>
+          <div style={{ display: 'flex', gap: 'var(--sp-3)', marginTop: 'var(--sp-8)', flexWrap: 'wrap' }}>
+            <Link href="/contact" className="btn btn-dk-primary">Get in touch</Link>
+            <Link href="/work" className="btn btn-dk-ghost">See my work</Link>
+          </div>
+        </div>
+      </header>
+
+      {/* ── Bio ── */}
+      <section className="section">
+        <div className="container">
+          <div className="about-grid">
+            <div className="about-bio">
+              <span className="eyebrow" style={{ marginBottom: 'var(--sp-5)' }}>Background</span>
+              <p>
+                I&apos;m a software engineer with a background in CS and Business Information Systems.
+                I&apos;ve worked across the stack — from hand-tuned SQL to pixel-level UI — and
+                learned that the best engineers understand the whole system.
               </p>
-              <p className="about-hero__bio">
-                When I&apos;m not writing code, I&apos;m thinking about the architecture
-                decisions that led to it, reading, or writing about what I&apos;m learning
-                on this blog.
+              <p>
+                When I&apos;m not writing code, I&apos;m thinking about the architecture decisions
+                that led to it, reading, or writing about what I&apos;m learning on this blog.
               </p>
-              <div className="about-hero__cta">
-                <Link href="/contact" className="btn btn-primary">
-                  Get in touch
-                </Link>
-                <Link href="/work" className="btn btn-ghost">
-                  See my work
-                </Link>
+              <div style={{ display: 'flex', gap: 'var(--sp-3)', marginTop: 'var(--sp-8)', flexWrap: 'wrap' }}>
+                <a href="/assets/docs/jason-lima-resume.pdf" download className="btn btn-ghost">
+                  Download CV
+                </a>
               </div>
             </div>
 
-            {/* Avatar / identity block */}
-            <div className="about-hero__avatar-wrap">
-              <div className="about-avatar" aria-hidden="true">
-                <span className="about-avatar__initials">JL</span>
+            <div className="about-aside">
+              <div className="about-stat-block">
+                <span className="about-stat-block__num">5+</span>
+                <span className="about-stat-block__label">Years shipping</span>
               </div>
-              <div className="about-status-card">
-                <span className="about-status-dot" aria-hidden="true" />
-                <div>
-                  <p className="about-status-card__label">Currently</p>
-                  <p className="about-status-card__value">Building in stealth</p>
-                </div>
+              <div className="about-stat-block">
+                <span className="about-stat-block__num">20+</span>
+                <span className="about-stat-block__label">Projects built</span>
+              </div>
+              <div className="about-stat-block">
+                <span className="about-stat-block__num">∞</span>
+                <span className="about-stat-block__label">Still learning</span>
               </div>
             </div>
           </div>
@@ -109,17 +119,18 @@ export default function AboutPage() {
       </section>
 
       {/* ── Experience ── */}
-      <section className="about-section">
+      <section className="section section--alt">
         <div className="container">
-          <div className="reveal">
-            <p className="section-eyebrow">Experience</p>
-            <h2 className="about-section__title">Where I&apos;ve worked</h2>
+          <div className="section-hd">
+            <span className="eyebrow">Experience</span>
+            <div className="section-hd__row">
+              <h2 className="section-title reveal">Where I&apos;ve worked</h2>
+            </div>
           </div>
 
           <div className="about-timeline">
             {EXPERIENCE.map((item, i) => (
               <div key={i} className="reveal about-timeline__item" data-delay={String(i * 100)}>
-                <div className="about-timeline__marker" aria-hidden="true" />
                 <div className="about-timeline__content">
                   <div className="about-timeline__header">
                     <div>
@@ -137,21 +148,24 @@ export default function AboutPage() {
       </section>
 
       {/* ── Stack ── */}
-      <section className="about-section about-section--alt">
+      <section className="section">
         <div className="container">
-          <div className="reveal">
-            <p className="section-eyebrow">Stack</p>
-            <h2 className="about-section__title">Tools &amp; technologies</h2>
+          <div className="section-hd">
+            <span className="eyebrow">Stack</span>
+            <div className="section-hd__row">
+              <h2 className="section-title reveal">Tools &amp; technologies</h2>
+            </div>
           </div>
 
-          <div className="about-stack-grid">
+          <div className="about-skills-grid">
             {STACK.map(({ category, items }, i) => (
-              <div key={category} className="reveal about-stack-group" data-delay={String(i * 80)}>
-                <h3 className="about-stack-group__label">{category}</h3>
-                <ul className="about-stack-group__list">
+              <div key={category} className="reveal" data-delay={String(i * 80)}>
+                <h3 style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--t-2xs)', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-accent)', marginBottom: 'var(--sp-3)' }}>
+                  {category}
+                </h3>
+                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
                   {items.map(item => (
-                    <li key={item} className="about-stack-group__item">
-                      <span className="about-stack-group__dot" aria-hidden="true" />
+                    <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--t-sm)', color: 'var(--color-ink-mid)' }}>
                       {item}
                     </li>
                   ))}
@@ -163,72 +177,32 @@ export default function AboutPage() {
       </section>
 
       {/* ── Values ── */}
-      <section className="about-section">
+      <section className="section section--alt">
         <div className="container">
-          <div className="reveal">
-            <p className="section-eyebrow">How I work</p>
-            <h2 className="about-section__title">Things I believe</h2>
+          <div className="section-hd">
+            <span className="eyebrow">How I work</span>
+            <div className="section-hd__row">
+              <h2 className="section-title reveal">Things I believe</h2>
+            </div>
           </div>
 
-          <div className="about-values-grid">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 'var(--sp-6)', marginTop: 'var(--sp-10)' }}>
             {VALUES.map(({ title, body }, i) => (
-              <div key={title} className="reveal about-value-card" data-delay={String(i * 100)}>
-                <span className="about-value-card__num">0{i + 1}</span>
-                <h3 className="about-value-card__title">{title}</h3>
-                <p className="about-value-card__body">{body}</p>
+              <div key={title} className="reveal pcard" data-delay={String(i * 100)}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--t-2xs)', color: 'var(--color-accent)', letterSpacing: '0.08em' }}>
+                  0{i + 1}
+                </span>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--t-xl)', fontWeight: 700, marginTop: 'var(--sp-3)', marginBottom: 'var(--sp-3)', color: 'var(--color-ink)' }}>
+                  {title}
+                </h3>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--t-sm)', color: 'var(--color-muted)', lineHeight: 1.65 }}>
+                  {body}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
-
-      {/* ── Colophon / CTA ── */}
-      <section className="about-cta-section">
-        <div className="container">
-          <div className="reveal about-cta-card">
-            <p className="section-eyebrow">Resume</p>
-            <h2 className="about-cta-card__title">Want the formal version?</h2>
-            <p className="about-cta-card__body">
-              Here&apos;s the condensed, printable summary of my experience and skills.
-              Or just reach out — I&apos;m happy to talk through my background directly.
-            </p>
-            <div className="about-cta-card__actions">
-              <a
-                href="/assets/docs/jason-lima-resume.pdf"
-                download
-                className="btn btn-primary"
-                aria-label="Download resume PDF"
-              >
-                Download CV
-                <DownloadIcon />
-              </a>
-              <Link href="/contact" className="btn btn-ghost">
-                Let&apos;s talk
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
-  )
-}
-
-function DownloadIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-      <polyline points="7 10 12 15 17 10" />
-      <line x1="12" y1="15" x2="12" y2="3" />
-    </svg>
   )
 }

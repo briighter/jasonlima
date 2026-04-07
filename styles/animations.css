@@ -1,18 +1,13 @@
 /* ============================================================
-   ANIMATIONS
-   Refined Editorial aesthetic — motion is subtle, purposeful,
-   never decorative for its own sake.
+   ANIMATIONS — Warm Editorial Dark
+   One orchestrated page-load stagger. CSS-first.
    ============================================================ */
 
-
-/* ============================================================
-   PAGE ENTRANCE — Hero stagger
-   Applied to hero children with animation-delay overrides
-   ============================================================ */
-@keyframes fadeUp {
+/* ── Page load entry animations ────────────────────────────── */
+@keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -20,99 +15,111 @@
   }
 }
 
-@keyframes fadeIn {
+@keyframes fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-@keyframes fadeDown {
-  from {
-    opacity: 0;
-    transform: translateY(-12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes slide-right {
+  from { transform: translateX(-16px); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
 }
 
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(24px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-/* ── Hero entrance utility classes ─────────────────── */
+/* ── Utility classes ─────────────────────────────────────────── */
 .anim-fade-up {
-  animation: fadeUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+  opacity: 0;
+  animation: fade-up 0.6s cubic-bezier(0, 0, 0.2, 1) forwards;
 }
+
 .anim-fade-in {
-  animation: fadeIn 0.6s ease both;
-}
-.anim-scale-in {
-  animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  opacity: 0;
+  animation: fade-in 0.5s cubic-bezier(0, 0, 0.2, 1) forwards;
 }
 
-/* ── Stagger delays ──────────────────────────────────── */
+/* ── Stagger delays ──────────────────────────────────────────── */
 .anim-delay-0   { animation-delay: 0ms; }
-.anim-delay-100 { animation-delay: 100ms; }
-.anim-delay-200 { animation-delay: 200ms; }
+.anim-delay-75  { animation-delay: 75ms; }
+.anim-delay-150 { animation-delay: 150ms; }
+.anim-delay-225 { animation-delay: 225ms; }
 .anim-delay-300 { animation-delay: 300ms; }
-.anim-delay-400 { animation-delay: 400ms; }
-.anim-delay-500 { animation-delay: 500ms; }
+.anim-delay-375 { animation-delay: 375ms; }
+.anim-delay-450 { animation-delay: 450ms; }
 .anim-delay-600 { animation-delay: 600ms; }
-.anim-delay-700 { animation-delay: 700ms; }
-.anim-delay-800 { animation-delay: 800ms; }
 
+/* ── Hover / interactive animations ─────────────────────────── */
 
-/* ============================================================
-   MARQUEE STRIP
-   Continuous horizontal scroll — used for skills / brand statement
-   ============================================================ */
+/* Underline slide-in — left to right */
+.link-underline {
+  position: relative;
+  text-decoration: none;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.25, 0, 0, 1);
+}
+
+.link-underline:hover::after {
+  transform: scaleX(1);
+}
+
+/* ── Section reveal (triggered by ScrollReveal / IntersectionObserver) ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.55s cubic-bezier(0, 0, 0.2, 1),
+              transform 0.55s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered reveal children */
+.reveal[data-delay="75"]  { transition-delay: 75ms; }
+.reveal[data-delay="150"] { transition-delay: 150ms; }
+.reveal[data-delay="225"] { transition-delay: 225ms; }
+.reveal[data-delay="300"] { transition-delay: 300ms; }
+.reveal[data-delay="375"] { transition-delay: 375ms; }
+.reveal[data-delay="450"] { transition-delay: 450ms; }
+.reveal[data-delay="600"] { transition-delay: 600ms; }
+
+/* ── Marquee strip ────────────────────────────────────────────── */
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
 
-.marquee {
+.marquee-strip {
   overflow: hidden;
-  white-space: nowrap;
+  background: var(--color-dk-surface);
+  border-top: 1px solid var(--color-dk-border);
+  border-bottom: 1px solid var(--color-dk-border);
+  padding-block: var(--sp-4);
+  user-select: none;
+}
+
+.marquee {
   display: flex;
-  width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
 }
 
 .marquee__track {
-  display: inline-flex;
-  gap: var(--space-8);
+  display: flex;
+  gap: var(--sp-8);
   animation: marquee 28s linear infinite;
   will-change: transform;
+  min-width: max-content;
 }
 
 .marquee__track:hover {
@@ -120,189 +127,27 @@
 }
 
 .marquee__item {
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
-  color: var(--color-muted);
-  letter-spacing: 0.3px;
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  letter-spacing: var(--ls-ultra);
+  text-transform: uppercase;
+  color: var(--color-dk-muted);
+  white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: var(--space-8);
-  flex-shrink: 0;
+  gap: var(--sp-8);
 }
 
 .marquee__separator {
+  display: inline-block;
   width: 4px;
   height: 4px;
+  border-radius: 50%;
   background: var(--color-accent);
-  border-radius: var(--radius-pill);
   flex-shrink: 0;
 }
 
-
-/* ============================================================
-   GRAIN / NOISE OVERLAY
-   Applied as ::after on hero — adds analogue warmth
-   ============================================================ */
-.grain-overlay {
-  position: relative;
-}
-.grain-overlay::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 128px;
-  opacity: 0.035;
-  pointer-events: none;
-  z-index: 1;
-  border-radius: inherit;
-}
-
-
-/* ============================================================
-   HERO GRADIENT MESH
-   ============================================================ */
-.hero-mesh {
-  background:
-    radial-gradient(ellipse 70% 60% at 10% 90%, rgba(60, 131, 246, 0.09), transparent),
-    radial-gradient(ellipse 50% 50% at 85% 15%, rgba(60, 131, 246, 0.06), transparent),
-    linear-gradient(160deg, #f2f2f3 0%, #e7f0fe 100%);
-}
-[data-theme="dark"] .hero-mesh {
-  background:
-    radial-gradient(ellipse 70% 60% at 10% 90%, rgba(60, 131, 246, 0.14), transparent),
-    radial-gradient(ellipse 50% 50% at 85% 15%, rgba(60, 131, 246, 0.08), transparent),
-    #111112;
-}
-
-
-/* ============================================================
-   CARD HOVER LIFT
-   Use on .post-card, .project-card etc.
-   ============================================================ */
-.hover-lift {
-  transition: transform var(--transition), box-shadow var(--transition);
-  will-change: transform;
-}
-.hover-lift:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
-}
-
-
-/* ============================================================
-   LINK UNDERLINE ANIMATION
-   ============================================================ */
-.link-animate {
-  position: relative;
-  text-decoration: none;
-}
-.link-animate::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: currentColor;
-  transition: width var(--transition);
-}
-.link-animate:hover::after { width: 100%; }
-
-
-/* ============================================================
-   BENTO GRID APPEAR
-   Staggered scale-in for project/bento cards
-   ============================================================ */
-.bento-appear {
-  opacity: 0;
-  transform: scale(0.97) translateY(12px);
-  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.bento-appear.in-view {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-}
-.bento-appear:nth-child(1) { transition-delay: 0ms; }
-.bento-appear:nth-child(2) { transition-delay: 80ms; }
-.bento-appear:nth-child(3) { transition-delay: 160ms; }
-.bento-appear:nth-child(4) { transition-delay: 240ms; }
-.bento-appear:nth-child(5) { transition-delay: 320ms; }
-.bento-appear:nth-child(6) { transition-delay: 400ms; }
-
-
-/* ============================================================
-   PAGE TRANSITION FADE
-   Wraps <main> — add .page-enter class on route change
-   ============================================================ */
-@keyframes pageFadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.page-enter {
-  animation: pageFadeIn 0.4s ease both;
-}
-
-
-/* ============================================================
-   FLOATING LABEL (contact form)
-   ============================================================ */
-.float-label {
-  position: relative;
-}
-
-.float-label input,
-.float-label textarea {
-  width: 100%;
-  padding: 20px 16px 8px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-med);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-base);
-  transition: border-color var(--transition), box-shadow var(--transition);
-  outline: none;
-  resize: vertical;
-}
-
-.float-label textarea {
-  min-height: 120px;
-  padding-top: 24px;
-}
-
-.float-label input:focus,
-.float-label textarea:focus {
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px var(--color-accent-dim);
-}
-
-.float-label label {
-  position: absolute;
-  left: 16px;
-  top: 14px;
-  font-size: var(--text-base);
-  color: var(--color-muted);
-  pointer-events: none;
-  transition: transform 0.2s ease, font-size 0.2s ease, color 0.2s ease;
-  transform-origin: left top;
-}
-
-.float-label input:focus + label,
-.float-label input:not(:placeholder-shown) + label,
-.float-label textarea:focus + label,
-.float-label textarea:not(:placeholder-shown) + label {
-  transform: translateY(-8px) scale(0.75);
-  color: var(--color-accent);
-}
-
-/* Note: label must come AFTER input in DOM for the + selector to work */
-
-
-/* ============================================================
-   REDUCED MOTION — respect user preference
-   ============================================================ */
+/* ── Reduced motion ──────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -310,16 +155,12 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
   }
 
   .reveal,
-  .bento-appear {
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  .marquee__track {
-    animation: none;
+  .anim-fade-up,
+  .anim-fade-in {
+    opacity: 1;
+    transform: none;
   }
 }

@@ -1,21 +1,32 @@
 import type { Metadata } from 'next'
+import { Syne, Instrument_Sans, JetBrains_Mono } from 'next/font/google'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import ScrollReveal from '@/components/ScrollReveal'
 import '@/styles/globals.css'
 import '@/styles/animations.css'
 
-/* ──────────────────────────────────────────────────
-   FONTS: system-ui stack — zero download, zero layout
-   shift. Uniqueness comes from palette and layout.
-   macOS → SF Pro Display/Text
-   Windows → Segoe UI Variable
-   Android → Roboto
-────────────────────────────────────────────────── */
+const syne = Syne({
+  subsets: ['latin'],
+  weight: ['400', '600', '700', '800'],
+  variable: '--font-syne',
+  display: 'swap',
+})
 
-/* ──────────────────────────────────────────────────
-   METADATA — defaults; individual pages override
-────────────────────────────────────────────────── */
+const instrumentSans = Instrument_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-instrument',
+  display: 'swap',
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-jetbrains',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
   title: {
     default: 'Jason Lima — Software Engineer',
@@ -23,42 +34,18 @@ export const metadata: Metadata = {
   },
   description:
     'Software engineer, builder, and occasional writer. Work at the intersection of thoughtful engineering and clean product design.',
-  metadataBase: new URL('https://briighter.github.io'),
+  metadataBase: new URL('https://jasonlima.com'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://briighter.github.io',
+    url: 'https://jasonlima.com',
     siteName: 'Jason Lima',
     title: 'Jason Lima — Software Engineer',
-    description:
-      'Software engineer, builder, and occasional writer.',
-    images: [
-      {
-        url: '/images/og-default.png',
-        width: 1200,
-        height: 630,
-        alt: 'Jason Lima — Software Engineer',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Jason Lima — Software Engineer',
     description: 'Software engineer, builder, and occasional writer.',
-    images: ['/images/og-default.png'],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  robots: { index: true, follow: true },
 }
 
-/* ──────────────────────────────────────────────────
-   DARK MODE SCRIPT
-   Must run synchronously BEFORE React hydrates to
-   prevent flash of wrong theme. Reads localStorage
-   and sets data-theme on <html>.
-────────────────────────────────────────────────── */
 const darkModeScript = `
 (function() {
   try {
@@ -70,24 +57,20 @@ const darkModeScript = `
 })();
 `
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
       suppressHydrationWarning
+      className={`${syne.variable} ${instrumentSans.variable} ${jetbrainsMono.variable}`}
     >
       <head>
-        {/* Synchronous dark mode — prevents FOUC */}
         <script dangerouslySetInnerHTML={{ __html: darkModeScript }} />
       </head>
       <body>
         <Nav />
         <ScrollReveal />
-        <main id="main-content" className="page-enter">
+        <main id="main-content">
           {children}
         </main>
         <Footer />
@@ -95,3 +78,4 @@ export default function RootLayout({
     </html>
   )
 }
+

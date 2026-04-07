@@ -1,71 +1,13 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
-import Link from 'next/link'
-
-/* ──────────────────────────────────────────────────
-   Floating label field — input or textarea
-   CSS class .float-label handles the label animation
-────────────────────────────────────────────────── */
-function FloatField({
-  id,
-  label,
-  type = 'text',
-  multiline = false,
-  required = false,
-  value,
-  onChange,
-}: {
-  id: string
-  label: string
-  type?: string
-  multiline?: boolean
-  required?: boolean
-  value: string
-  onChange: (v: string) => void
-}) {
-  return (
-    <div className="float-label">
-      {multiline ? (
-        <textarea
-          id={id}
-          name={id}
-          placeholder=" "
-          required={required}
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          rows={5}
-          aria-label={label}
-        />
-      ) : (
-        <input
-          id={id}
-          name={id}
-          type={type}
-          placeholder=" "
-          required={required}
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          aria-label={label}
-          autoComplete={id === 'email' ? 'email' : id === 'name' ? 'name' : 'off'}
-        />
-      )}
-      <label htmlFor={id}>{label}</label>
-    </div>
-  )
-}
 
 const SOCIAL_LINKS = [
-  { label: 'Email directly', href: 'mailto:jason@example.com', value: 'jason@example.com'        },
-  { label: 'GitHub',         href: 'https://github.com/briighter', value: 'github.com/briighter'  },
+  { label: 'Email directly', href: 'mailto:jason@jasonlima.com', value: 'jason@jasonlima.com'        },
+  { label: 'GitHub',         href: 'https://github.com/briighter', value: 'github.com/briighter'      },
   { label: 'LinkedIn',       href: 'https://linkedin.com/in/jasonlima', value: 'linkedin.com/in/jasonlima' },
 ]
 
-/* ──────────────────────────────────────────────────
-   ContactForm — client component
-   Extracted from page.tsx so the page can remain a
-   server component and export metadata.
-────────────────────────────────────────────────── */
 export default function ContactForm() {
   const [name,    setName]    = useState('')
   const [email,   setEmail]   = useState('')
@@ -95,96 +37,105 @@ export default function ContactForm() {
 
   return (
     <div className="contact-page">
-      <div className="container">
-        <div className="contact-grid">
-          {/* Left — copy + social links */}
-          <div>
-            <p className="section-eyebrow">Get in touch</p>
+      {/* Dark header */}
+      <header className="section section--dark">
+        <div className="container">
+          <span className="eyebrow">{'// 04'} &mdash; contact</span>
+          <h1 className="section-title" style={{ color: 'var(--color-dk-ink)', marginTop: 'var(--sp-3)', maxWidth: '18ch' }}>
+            Let&apos;s talk about <em style={{ color: 'var(--color-accent)' }}>something real.</em>
+          </h1>
+          <p style={{ color: 'var(--color-dk-muted)', fontFamily: 'var(--font-body)', fontSize: 'var(--t-lg)', maxWidth: '520px', marginTop: 'var(--sp-4)', lineHeight: 1.65 }}>
+            Open to interesting conversations &mdash; engineering challenges,
+            collaboration, or just trading notes. No pitch decks.
+          </p>
+        </div>
+      </header>
 
-            <h1 className="contact-headline">
-              Let&apos;s talk <em>about something real.</em>
-            </h1>
+      <section className="section">
+        <div className="container">
+          <div className="contact-grid">
+            {/* Left — links */}
+            <div className="contact-info">
+              <p className="eyebrow" style={{ marginBottom: 'var(--sp-6)' }}>Reach me at</p>
+              <div className="contact-links">
+                {SOCIAL_LINKS.map(({ label, href, value }) => (
+                  <a
+                    key={href}
+                    href={href}
+                    target={href.startsWith('http') ? '_blank' : undefined}
+                    rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    className="contact-link"
+                  >
+                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--t-2xs)', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-muted)' }}>{label}</span>
+                    <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--t-sm)', color: 'var(--color-ink)', marginTop: 'var(--sp-1)' }}>{value}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
 
-            <p className="contact-blurb">
-              I&apos;m open to interesting conversations — about engineering challenges,
-              collaboration opportunities, or just trading notes on things we&apos;re both
-              figuring out. No pitch decks, please.
-            </p>
-
-            <div className="contact-social-links">
-              {SOCIAL_LINKS.map(({ label, href, value }) => (
-                <a
-                  key={href}
-                  href={href}
-                  target={href.startsWith('http') ? '_blank' : undefined}
-                  rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                  className="contact-social-link link-animate"
+            {/* Right — form */}
+            <div>
+              {status === 'success' ? (
+                <div style={{ padding: 'var(--sp-10)', background: 'var(--color-bg-alt)', borderRadius: 'var(--r-md)', border: '1px solid var(--color-border)' }}>
+                  <p style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--t-2xl)', fontWeight: 700, color: 'var(--color-ink)', marginBottom: 'var(--sp-3)' }}>Message sent.</p>
+                  <p style={{ fontFamily: 'var(--font-body)', color: 'var(--color-muted)' }}>
+                    I&apos;ll get back to you within a couple of days.
+                  </p>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleSubmit}
+                  noValidate
+                  aria-label="Contact form"
+                  style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-5)' }}
                 >
-                  <span className="contact-social-link__label">{label}</span>
-                  <span className="contact-social-link__value">{value}</span>
-                </a>
-              ))}
+                  <div className="field">
+                    <label className="field__label" htmlFor="name">Your name</label>
+                    <input
+                      id="name" name="name" type="text"
+                      className="field__input" required
+                      value={name} onChange={e => setName(e.target.value)}
+                      autoComplete="name"
+                    />
+                  </div>
+                  <div className="field">
+                    <label className="field__label" htmlFor="email">Email address</label>
+                    <input
+                      id="email" name="email" type="email"
+                      className="field__input" required
+                      value={email} onChange={e => setEmail(e.target.value)}
+                      autoComplete="email"
+                    />
+                  </div>
+                  <div className="field">
+                    <label className="field__label" htmlFor="message">Your message</label>
+                    <textarea
+                      id="message" name="message"
+                      className="field__textarea" required rows={5}
+                      value={message} onChange={e => setMessage(e.target.value)}
+                    />
+                  </div>
+
+                  {status === 'error' && (
+                    <p role="alert" style={{ color: '#c0392b', fontFamily: 'var(--font-body)', fontSize: 'var(--t-sm)' }}>
+                      Something went wrong. Try emailing directly instead.
+                    </p>
+                  )}
+
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={status === 'loading'}
+                    style={{ alignSelf: 'flex-start' }}
+                  >
+                    {status === 'loading' ? 'Sending\u2026' : 'Send message'}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
-
-          {/* Right — form */}
-          <div>
-            {status === 'success' ? (
-              <div className="contact-success">
-                <p className="contact-success__title">Message sent.</p>
-                <p className="contact-success__sub">
-                  I&apos;ll get back to you within a couple of days.
-                </p>
-              </div>
-            ) : (
-              <form
-                onSubmit={handleSubmit}
-                noValidate
-                aria-label="Contact form"
-                className="contact-form"
-              >
-                <FloatField id="name"    label="Your name"     value={name}    onChange={setName}    required />
-                <FloatField id="email"   label="Email address" type="email" value={email}   onChange={setEmail}   required />
-                <FloatField id="message" label="Your message"  multiline value={message} onChange={setMessage} required />
-
-                {status === 'error' && (
-                  <p role="alert" className="contact-form__error">
-                    Something went wrong. Try emailing directly instead.
-                  </p>
-                )}
-
-                <button
-                  type="submit"
-                  className="btn btn-primary contact-form__submit"
-                  disabled={status === 'loading'}
-                >
-                  {status === 'loading' ? 'Sending…' : 'Send message'}
-                  {status !== 'loading' && <SendIcon />}
-                </button>
-              </form>
-            )}
-          </div>
         </div>
-      </div>
+      </section>
     </div>
-  )
-}
-
-function SendIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <line x1="22" y1="2" x2="11" y2="13" />
-      <polygon points="22 2 15 22 11 13 2 9 22 2" />
-    </svg>
   )
 }

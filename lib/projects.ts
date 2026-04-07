@@ -51,7 +51,7 @@ function parseProject(filename: string): Project {
    getAllProjects
    Returns all projects sorted by year desc
 ────────────────────────────────────────────────── */
-export async function getAllProjects(): Promise<Project[]> {
+export function getAllProjects(): Project[] {
   if (!fs.existsSync(PROJECTS_DIR)) return []
 
   const files = fs
@@ -66,7 +66,7 @@ export async function getAllProjects(): Promise<Project[]> {
 /* ──────────────────────────────────────────────────
    getFeaturedProjects
 ────────────────────────────────────────────────── */
-export async function getFeaturedProjects(limit = 4): Promise<Project[]> {
-  const all = await getAllProjects()
+export function getFeaturedProjects(limit = 4): Project[] {
+  const all = getAllProjects()
   return all.filter(p => p.featured).slice(0, limit)
 }

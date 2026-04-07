@@ -48,7 +48,7 @@ function parsePost(filename: string): Post {
    getAllPosts
    Returns all PUBLISHED posts, sorted by date desc
 ────────────────────────────────────────────────── */
-export async function getAllPosts(): Promise<Post[]> {
+export function getAllPosts(): Post[] {
   if (!fs.existsSync(POSTS_DIR)) return []
 
   const files = fs
@@ -68,7 +68,7 @@ export async function getAllPosts(): Promise<Post[]> {
    Returns a single post by its slug (filename minus extension)
    Throws if not found or unpublished
 ────────────────────────────────────────────────── */
-export async function getPostBySlug(slug: string): Promise<Post> {
+export function getPostBySlug(slug: string): Post {
   const filename = `${slug}.mdx`
   const fullPath = path.join(POSTS_DIR, filename)
 
@@ -89,8 +89,8 @@ export async function getPostBySlug(slug: string): Promise<Post> {
    getFeaturedPosts
    Returns published posts with featured: true, newest first
 ────────────────────────────────────────────────── */
-export async function getFeaturedPosts(limit = 3): Promise<Post[]> {
-  const all = await getAllPosts()
+export function getFeaturedPosts(limit = 3): Post[] {
+  const all = getAllPosts()
   return all.filter(p => p.featured).slice(0, limit)
 }
 
@@ -98,7 +98,7 @@ export async function getFeaturedPosts(limit = 3): Promise<Post[]> {
    getAllSlugs
    Used by generateStaticParams() in dynamic routes
 ────────────────────────────────────────────────── */
-export async function getAllSlugs(): Promise<string[]> {
+export function getAllSlugs(): string[] {
   if (!fs.existsSync(POSTS_DIR)) return []
 
   return fs

@@ -1,78 +1,49 @@
 import Link from 'next/link'
 import type { Post } from '@/lib/posts'
 
-interface PostCardProps {
+interface Props {
   post: Post
 }
 
-/* Derive a stable accent color from the first tag */
-const TAG_COLOR_MAP: Record<string, string> = {
-  engineering:  'accent',
-  architecture: 'violet',
-  performance:  'orange',
-  database:     'emerald',
-  api:          'accent',
-  design:       'rose',
-  systems:      'violet',
-  typescript:   'accent',
-}
-
-function colorForPost(post: Post): string {
-  const first = (post.tags[0] ?? '').toLowerCase()
-  return TAG_COLOR_MAP[first] ?? 'accent'
-}
-
-function formatDate(dateStr: string) {
+function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-US', {
-    month: 'short', day: 'numeric', year: 'numeric',
+    year:  'numeric',
+    month: 'short',
+    day:   'numeric',
   })
 }
 
-/* ──────────────────────────────────────────────────
-   PostCard — editorial "Today" tab style card
-   Color accent driven by post's first tag
-────────────────────────────────────────────────── */
-export default function PostCard({ post }: PostCardProps) {
-  const color = colorForPost(post)
-  const cssVars = {
-    '--post-color':     `var(--color-${color})`,
-    '--post-color-dim': `var(--color-${color}-dim)`,
-  } as React.CSSProperties
+export default function PostCard({ post }: Props) {
+  const { slug, title, excerpt, tags, date, readTime } = post
 
   return (
-    <Link
-      href={`/blog/${post.slug}`}
-      className="editorial-card"
-      style={cssVars}
-      aria-label={`Read: ${post.title}`}
-    >
-      {/* Category strip */}
-      <div className="editorial-card__top">
-        {post.tags.length > 0 && (
-          <span className="editorial-card__cat">{post.tags[0]}</span>
-        )}
-        {post.readTime && (
-          <span className="editorial-card__time">{post.readTime}</span>
-        )}
+    <Link href={`/blog/${slug}`} className="post-card">
+      <div className="post-card__eyebrow">
+        <span className="post-card__date">{formatDate(date)}</span>
+        <span className="post-card__reading">{readTime}</span>
       </div>
 
-      {/* Title */}
-      <h3 className="editorial-card__title">{post.title}</h3>
-
-      {/* Excerpt */}
-      {post.excerpt && (
-        <p className="editorial-card__excerpt">{post.excerpt}</p>
+      {tags.length > 0 && (
+        <div className="post-card__tags">
+          {tags.map((tag) => (
+            <span key={tag} className="tag">{tag}</span>
+          ))}
+        </div>
       )}
 
-      {/* Footer */}
-      <div className="editorial-card__footer">
-        <time dateTime={post.date} className="editorial-card__date">
-          {formatDate(post.date)}
-        </time>
-        <span className="editorial-card__cta" aria-hidden="true">
-          Read →
-        </span>
-      </div>
+      <h3 className="post-card__title">{title}</h3>
+
+      {excerpt && (
+        <p className="post-card__excerpt">{excerpt}</p>
+      )}
+
+      <span className="post-card__cta">
+        Read article
+        <svg className="post-card__arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12" />
+          <polyline points="12 5 19 12 12 19" />
+        </svg>
+      </span>
     </Link>
   )
 }

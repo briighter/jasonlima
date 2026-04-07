@@ -9,10 +9,6 @@ interface WorkClientProps {
   allTags:  string[]
 }
 
-/* ──────────────────────────────────────────────────
-   WorkClient — App Store-style browse page
-   Featured banner + category filter + app grid
-────────────────────────────────────────────────── */
 export default function WorkClient({ projects, allTags }: WorkClientProps) {
   const [activeTag, setActiveTag] = useState<string | null>(null)
   const gridRef = useRef<HTMLDivElement>(null)
@@ -20,12 +16,6 @@ export default function WorkClient({ projects, allTags }: WorkClientProps) {
   const filtered = useMemo(
     () => activeTag ? projects.filter(p => p.tags.includes(activeTag)) : projects,
     [projects, activeTag]
-  )
-
-  // Unique categories from ALL projects (not filtered)
-  const categories = useMemo(
-    () => [...new Set(projects.map(p => p.category).filter(Boolean))].sort(),
-    [projects]
   )
 
   useEffect(() => {
@@ -40,10 +30,9 @@ export default function WorkClient({ projects, allTags }: WorkClientProps) {
 
   return (
     <>
-      {/* ── Category pills ── */}
-      <div className="store-category-row" role="group" aria-label="Filter by category">
+      <div className="work-filter" role="group" aria-label="Filter by tag">
         <button
-          className={`store-cat${!activeTag ? ' active' : ''}`}
+          className={'work-filter__btn' + (!activeTag ? ' work-filter__btn--active' : '')}
           onClick={() => setActiveTag(null)}
         >
           All
@@ -51,7 +40,7 @@ export default function WorkClient({ projects, allTags }: WorkClientProps) {
         {allTags.map(tag => (
           <button
             key={tag}
-            className={`store-cat${activeTag === tag ? ' active' : ''}`}
+            className={'work-filter__btn' + (activeTag === tag ? ' work-filter__btn--active' : '')}
             onClick={() => setActiveTag(prev => prev === tag ? null : tag)}
             aria-pressed={activeTag === tag}
           >
@@ -60,11 +49,10 @@ export default function WorkClient({ projects, allTags }: WorkClientProps) {
         ))}
       </div>
 
-      {/* ── App grid ── */}
       {filtered.length === 0 ? (
-        <p className="store-empty">No projects matching &ldquo;{activeTag}&rdquo;.</p>
+        <p className="work-empty">No projects matching &ldquo;{activeTag}&rdquo;.</p>
       ) : (
-        <div ref={gridRef} className="app-grid">
+        <div ref={gridRef} className="work-grid">
           {filtered.map((project, i) => (
             <div
               key={project.slug}
