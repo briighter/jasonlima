@@ -4,30 +4,44 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'About — Jason Lima',
   description:
-    'Software engineer with 5+ years building products that people actually use. Background in full-stack development, system design, and the craft of clean code.',
+    'Software engineer at Fidelity Investments with 6+ years of experience. Background in full-stack development, system design, and shipping software at scale.',
 }
 
 const EXPERIENCE = [
   {
-    role: 'Senior Software Engineer',
-    company: 'Stealth Startup',
-    period: '2023 – Present',
-    description:
-      'Building the core platform from zero to production. Architecting the backend API, data layer, and realtime event system. TypeScript, Node.js, PostgreSQL, Redis.',
-  },
-  {
     role: 'Software Engineer',
-    company: 'Previous Company',
-    period: '2021 – 2023',
+    company: 'Fidelity Investments',
+    period: 'Jun 2021 – Present',
     description:
-      'Led frontend architecture migration from legacy stack to Next.js. Reduced page load by 60%. Mentored two junior members. Shipped 3 major product features end-to-end.',
+      'Full-stack engineering on large-scale financial systems serving millions of users. Designing software infrastructure, leading feature delivery end-to-end, and contributing across the stack at one of the largest asset managers in the world.',
   },
   {
-    role: 'Full-Stack Developer',
-    company: 'Freelance',
-    period: '2019 – 2021',
+    role: 'Associate Software Engineer',
+    company: 'Fidelity Investments',
+    period: 'Jan 2021 – Jun 2021',
     description:
-      'Designed and built web applications for clients across fintech, health, and e-commerce. Grew comfortable owning the full delivery lifecycle.',
+      'Promoted from intern to full-time engineer within six months. Ramped quickly on production codebases and began contributing to core platform work.',
+  },
+  {
+    role: 'Software Engineer Intern',
+    company: 'Fidelity Investments',
+    period: 'Jun 2020 – Dec 2020',
+    description:
+      'Six-month internship building internal tooling and gaining hands-on experience with enterprise-scale software development practices.',
+  },
+  {
+    role: 'Lead Quality Manager',
+    company: 'CVS Health',
+    period: 'Jan 2020 – May 2020',
+    description:
+      'Led quality and process operations at a major pharmacy retail location in Woonsocket, RI.',
+  },
+  {
+    role: 'Quality and Process Manager',
+    company: 'CVS Health',
+    period: 'Aug 2018 – Jan 2020',
+    description:
+      'Managed store quality, compliance, and operational processes. Developed systems for tracking and improving team performance.',
   },
 ]
 
@@ -102,7 +116,7 @@ export default function AboutPage() {
 
             <div className="about-aside">
               <div className="about-stat-block">
-                <span className="about-stat-block__num">5+</span>
+                <span className="about-stat-block__num">6+</span>
                 <span className="about-stat-block__label">Years shipping</span>
               </div>
               <div className="about-stat-block">
