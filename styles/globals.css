@@ -1,6 +1,6 @@
 /* ============================================================
    DESIGN SYSTEM — Warm Editorial Dark
-   Fonts: Syne (display) · Instrument Sans (body) · JetBrains Mono
+   Fonts: Geist Sans (display/body) · Geist Mono
    Inspired by: Webflow agency templates, editorial print design
    ============================================================ */
 
@@ -92,9 +92,9 @@
   --color-dk-border:   var(--cb-700);
 
   /* ── Typography ─────────────────────────────────────────── */
-  --font-display: var(--font-syne, 'Syne'), system-ui, sans-serif;
-  --font-body:    var(--font-instrument, 'Instrument Sans'), system-ui, sans-serif;
-  --font-mono:    var(--font-jetbrains, 'JetBrains Mono'), ui-monospace, monospace;
+  --font-display: var(--font-geist-sans, 'Geist'), system-ui, sans-serif;
+  --font-body:    var(--font-geist-sans, 'Geist'), system-ui, sans-serif;
+  --font-mono:    var(--font-geist-mono, 'Geist Mono'), ui-monospace, monospace;
 
   --w-regular:  400;
   --w-medium:   500;
@@ -1034,12 +1034,20 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
    WORK PAGE
    ============================================================ */
 .work-page {
-  padding-top: calc(var(--nav-h) + var(--sp-section));
-  padding-bottom: var(--sp-section);
+  padding-top: calc(var(--nav-h) + var(--sp-16));
+  padding-bottom: var(--sp-16);
 }
 
 .work-header {
-  margin-bottom: var(--sp-12);
+  margin-bottom: var(--sp-6);
+}
+
+.work-page .work-header.section {
+  padding-block: var(--sp-10);
+}
+
+.work-page .section {
+  padding-block: var(--sp-8);
 }
 
 .work-header__title {
@@ -1062,8 +1070,8 @@ h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
   display: flex;
   flex-wrap: wrap;
   gap: var(--sp-2);
-  margin-bottom: var(--sp-12);
-  padding-bottom: var(--sp-8);
+  margin-bottom: var(--sp-8);
+  padding-bottom: var(--sp-6);
   border-bottom: 1px solid var(--color-border);
 }
 
