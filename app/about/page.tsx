@@ -2,149 +2,127 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'About — Jason Lima',
+  title: 'About — Jason Lima, Freelance Solutions Engineer',
   description:
-    'Software engineer at Fidelity Investments with 6+ years of experience. Background in full-stack development, system design, and shipping software at scale.',
+    'Business + Computer Science background. I help small businesses save time and win customers with AI, automation, web apps, mobile apps, and websites. Direct, fixed-price, no agency markup.',
 }
 
 const EXPERIENCE = [
   {
-    role: 'Software Engineer',
-    company: 'Fidelity Investments',
-    period: 'Jun 2021 – Present',
+    role: 'Freelance Solutions Engineer — Lima Labs',
+    company: 'Helping small businesses with AI, automation & apps',
+    period: '2024 – Present',
     description:
-      'Full-stack engineering on large-scale financial systems serving millions of users. Designing software infrastructure, leading feature delivery end-to-end, and contributing across the stack at one of the largest asset managers in the world.',
+      'Diagnostic-first builds: AI chatbots, workflow automations, custom web apps, mobile apps, and high-converting websites. Fixed pricing, plain-English handoffs, owner owns everything.',
   },
   {
-    role: 'Associate Software Engineer',
-    company: 'Fidelity Investments',
-    period: 'Jan 2021 – Jun 2021',
+    role: 'Associate / Software Engineer',
+    company: 'Product engineering teams',
+    period: '2021 – 2024',
     description:
-      'Promoted from intern to full-time engineer within six months. Ramped quickly on production codebases and began contributing to core platform work.',
+      'Full-stack product work — TypeScript, React/Next.js, Node, PostgreSQL. Shipped APIs, dashboards, and customer-facing features. Learned what actually holds up in production.',
   },
   {
-    role: 'Software Engineer Intern',
-    company: 'Fidelity Investments',
-    period: 'Jun 2020 – Dec 2020',
+    role: 'Business Information Systems + Computer Science',
+    company: 'SNHU — dual background',
+    period: 'Foundation',
     description:
-      'Six-month internship building internal tooling and gaining hands-on experience with enterprise-scale software development practices.',
-  },
-  {
-    role: 'Lead Quality Manager',
-    company: 'CVS Health',
-    period: 'Jan 2020 – May 2020',
-    description:
-      'Led quality and process operations at a major pharmacy retail location in Woonsocket, RI.',
-  },
-  {
-    role: 'Quality and Process Manager',
-    company: 'CVS Health',
-    period: 'Aug 2018 – Jan 2020',
-    description:
-      'Managed store quality, compliance, and operational processes. Developed systems for tracking and improving team performance.',
+      'Business first, then engineering. That combo is why I scope by ROI — time saved and customers won — not by lines of code.',
   },
 ]
 
 const STACK = [
-  { category: 'Languages',      items: ['TypeScript', 'JavaScript', 'Go', 'Python', 'SQL'] },
-  { category: 'Frontend',       items: ['React', 'Next.js', 'CSS (real CSS)', 'Web APIs', 'Accessibility'] },
-  { category: 'Backend',        items: ['Node.js', 'REST & GraphQL', 'WebSockets', 'Auth patterns', 'Queues'] },
-  { category: 'Data',           items: ['PostgreSQL', 'Redis', 'SQLite', 'Prisma ORM', 'Query optimisation'] },
-  { category: 'Infrastructure', items: ['Docker', 'AWS (ECS, S3, CF)', 'GitHub Actions', 'Vercel', 'Monitoring'] },
+  { category: 'AI & Automation', items: ['AI chatbots (site + Messenger)', 'RAG over your docs', 'Zapier / Make / custom scripts', 'Lead follow-up flows', 'Review & scheduling flows'] },
+  { category: 'Web & Mobile', items: ['Next.js / React / TypeScript', 'Node.js APIs', 'iOS + Android (cross-platform)', 'Booking & ordering flows', 'Customer portals'] },
+  { category: 'Websites that sell', items: ['Local SEO setup', 'Fast mobile-first builds', 'Google Business + Maps', 'Call / booking conversion', 'Analytics that owners read'] },
+  { category: 'Data & Integrations', items: ['PostgreSQL / SQLite', 'Stripe / QuickBooks / CRM sync', 'Dashboards owners use', 'CSV → system migrations', 'Backups & ownership docs'] },
 ]
 
 const VALUES = [
   {
-    title: 'Clarity over cleverness',
-    body:
-      'The best code is the code your 3am future-self can read without coffee. I optimise for readability and explicit intent before anything else.',
+    title: 'Business outcome first',
+    body: 'If it doesn’t save hours or win customers, I won’t sell it to you. I’ll tell you on the first call if software isn’t the answer.',
   },
   {
-    title: 'Shipped beats perfect',
-    body:
-      'I have strong opinions about quality, but I know the difference between a worthwhile standard and a self-indulgent one. Real products require real trade-offs.',
+    title: 'Plain English, always',
+    body: 'No ticket black holes. Weekly updates, short video walkthroughs, and docs you can actually use without calling me.',
   },
   {
-    title: 'Learn in public',
-    body:
-      'Writing about what I\'m building or figuring out makes me a sharper thinker and occasionally helps someone else. That\'s the blog.',
+    title: 'You own everything',
+    body: 'Code, accounts, domains, docs — all in your name from day one. Fixed price in writing before I start.',
   },
 ]
 
 export default function AboutPage() {
   return (
     <main className="about-page">
-      {/* ── Header ── */}
-      <header className="about-header section section--dark">
+      <section className="about-hero">
         <div className="container">
-          <span className="eyebrow">{'// 03'} &mdash; about</span>
-          <h1 className="section-title" style={{ color: 'var(--color-dk-ink)', marginTop: 'var(--sp-3)', maxWidth: '18ch' }}>
-            I build software &mdash; and care about <em style={{ color: 'var(--color-accent)' }}>how</em> it&apos;s built.
-          </h1>
-          <p style={{ color: 'var(--color-dk-muted)', fontFamily: 'var(--font-body)', fontSize: 'var(--t-lg)', maxWidth: '560px', marginTop: 'var(--sp-5)', lineHeight: 1.65 }}>
-            Jason Lima. Full-stack engineer focused on clean architecture,
-            clear communication, and shipping software that actually matters.
-          </p>
-          <div style={{ display: 'flex', gap: 'var(--sp-3)', marginTop: 'var(--sp-8)', flexWrap: 'wrap' }}>
-            <Link href="/contact" className="btn btn-dk-primary">Get in touch</Link>
-            <Link href="/work" className="btn btn-dk-ghost">See my work</Link>
-          </div>
-        </div>
-      </header>
-
-      {/* ── Bio ── */}
-      <section className="section">
-        <div className="container">
-          <div className="about-grid">
-            <div className="about-bio">
-              <span className="eyebrow" style={{ marginBottom: 'var(--sp-5)' }}>Background</span>
-              <p>
-                I&apos;m a software engineer with a background in CS and Business Information Systems.
-                I&apos;ve worked across the stack — from hand-tuned SQL to pixel-level UI — and
-                learned that the best engineers understand the whole system.
+          <div className="about-hero__inner">
+            <div className="about-hero__text">
+              <p className="section-eyebrow">About — why owners hire me</p>
+              <h1 className="about-hero__title">
+                I translate business pain <em>into simple working software.</em>
+              </h1>
+              <p className="about-hero__bio">
+                I&apos;m Jason Lima, freelance solutions engineer behind Lima Labs.
+                Business degree + Computer Science degree means I don&apos;t just
+                write code — I help you decide what&apos;s worth building, then
+                build it fast: AI helpers, automations, web apps, mobile apps,
+                and websites that bring customers.
               </p>
-              <p>
-                When I&apos;m not writing code, I&apos;m thinking about the architecture decisions
-                that led to it, reading, or writing about what I&apos;m learning on this blog.
+              <p className="about-hero__bio">
+                Solo by design: you talk to the person doing the work. Email me at{' '}
+                <a href="mailto:limalabsllc@gmail.com" style={{ textDecoration: 'underline' }}>
+                  limalabsllc@gmail.com
+                </a>{' '}
+                or message{' '}
+                <a
+                  href="https://www.facebook.com/LimaLabsTech"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ textDecoration: 'underline' }}
+                >
+                  Lima Labs on Facebook
+                </a>.
               </p>
-              <div style={{ display: 'flex', gap: 'var(--sp-3)', marginTop: 'var(--sp-8)', flexWrap: 'wrap' }}>
-                <a href="/assets/docs/jason-lima-resume.pdf" download className="btn btn-ghost">
-                  Download CV
-                </a>
+              <div className="about-hero__cta">
+                <Link href="/contact" className="btn btn-primary">
+                  Get free fix assessment →
+                </Link>
+                <Link href="/work" className="btn btn-ghost">
+                  See work
+                </Link>
               </div>
             </div>
 
-            <div className="about-aside">
-              <div className="about-stat-block">
-                <span className="about-stat-block__num">6+</span>
-                <span className="about-stat-block__label">Years shipping</span>
+            <div className="about-hero__avatar-wrap">
+              <div className="about-avatar" aria-hidden="true">
+                <span className="about-avatar__initials">JL</span>
               </div>
-              <div className="about-stat-block">
-                <span className="about-stat-block__num">20+</span>
-                <span className="about-stat-block__label">Projects built</span>
-              </div>
-              <div className="about-stat-block">
-                <span className="about-stat-block__num">∞</span>
-                <span className="about-stat-block__label">Still learning</span>
+              <div className="about-status-card">
+                <span className="about-status-dot" aria-hidden="true" />
+                <div>
+                  <p className="about-status-card__label">Currently</p>
+                  <p className="about-status-card__value">Taking new projects</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Experience ── */}
-      <section className="section section--alt">
+      <section className="about-section">
         <div className="container">
-          <div className="section-hd">
-            <span className="eyebrow">Experience</span>
-            <div className="section-hd__row">
-              <h2 className="section-title reveal">Where I&apos;ve worked</h2>
-            </div>
+          <div className="reveal">
+            <p className="section-eyebrow">Background</p>
+            <h2 className="about-section__title">Experience that matters to you</h2>
           </div>
 
           <div className="about-timeline">
             {EXPERIENCE.map((item, i) => (
               <div key={i} className="reveal about-timeline__item" data-delay={String(i * 100)}>
+                <div className="about-timeline__marker" aria-hidden="true" />
                 <div className="about-timeline__content">
                   <div className="about-timeline__header">
                     <div>
@@ -161,25 +139,21 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Stack ── */}
-      <section className="section">
+      <section className="about-section about-section--alt">
         <div className="container">
-          <div className="section-hd">
-            <span className="eyebrow">Stack</span>
-            <div className="section-hd__row">
-              <h2 className="section-title reveal">Tools &amp; technologies</h2>
-            </div>
+          <div className="reveal">
+            <p className="section-eyebrow">Toolbox</p>
+            <h2 className="about-section__title">What I can build for your business</h2>
           </div>
 
-          <div className="about-skills-grid">
+          <div className="about-stack-grid">
             {STACK.map(({ category, items }, i) => (
-              <div key={category} className="reveal" data-delay={String(i * 80)}>
-                <h3 style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--t-2xs)', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-accent)', marginBottom: 'var(--sp-3)' }}>
-                  {category}
-                </h3>
-                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
+              <div key={category} className="reveal about-stack-group" data-delay={String(i * 80)}>
+                <h3 className="about-stack-group__label">{category}</h3>
+                <ul className="about-stack-group__list">
                   {items.map(item => (
-                    <li key={item} style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--t-sm)', color: 'var(--color-ink-mid)' }}>
+                    <li key={item} className="about-stack-group__item">
+                      <span className="about-stack-group__dot" aria-hidden="true" />
                       {item}
                     </li>
                   ))}
@@ -190,30 +164,47 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Values ── */}
-      <section className="section section--alt">
+      <section className="about-section">
         <div className="container">
-          <div className="section-hd">
-            <span className="eyebrow">How I work</span>
-            <div className="section-hd__row">
-              <h2 className="section-title reveal">Things I believe</h2>
-            </div>
+          <div className="reveal">
+            <p className="section-eyebrow">How I work</p>
+            <h2 className="about-section__title">What you can expect</h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 'var(--sp-6)', marginTop: 'var(--sp-10)' }}>
+          <div className="about-values-grid">
             {VALUES.map(({ title, body }, i) => (
-              <div key={title} className="reveal pcard" data-delay={String(i * 100)}>
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--t-2xs)', color: 'var(--color-accent)', letterSpacing: '0.08em' }}>
-                  0{i + 1}
-                </span>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--t-xl)', fontWeight: 700, marginTop: 'var(--sp-3)', marginBottom: 'var(--sp-3)', color: 'var(--color-ink)' }}>
-                  {title}
-                </h3>
-                <p style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--t-sm)', color: 'var(--color-muted)', lineHeight: 1.65 }}>
-                  {body}
-                </p>
+              <div key={title} className="reveal about-value-card" data-delay={String(i * 100)}>
+                <span className="about-value-card__num">0{i + 1}</span>
+                <h3 className="about-value-card__title">{title}</h3>
+                <p className="about-value-card__body">{body}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="about-cta-section">
+        <div className="container">
+          <div className="reveal about-cta-card">
+            <p className="section-eyebrow">Next step</p>
+            <h2 className="about-cta-card__title">Tell me what&apos;s eating your week.</h2>
+            <p className="about-cta-card__body">
+              Free 20-min diagnostic. I&apos;ll map the simplest fix — yours to keep
+              even if we never work together.
+            </p>
+            <div className="about-cta-card__actions">
+              <Link href="/contact" className="btn btn-primary">
+                Get my free assessment →
+              </Link>
+              <a
+                href="https://www.facebook.com/LimaLabsTech"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn btn-outline"
+              >
+                Message on Facebook
+              </a>
+            </div>
           </div>
         </div>
       </section>

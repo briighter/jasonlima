@@ -181,36 +181,16 @@ basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
 
 ---
 
-## Newsletter Setup
+## Forms — Owned Backend (no external service)
 
-### Option A — Formspree (zero backend, works with static export)
+Contact (`/api/contact`) and playbook signup (`/api/subscribe`) are your own
+Next.js API routes sending via Gmail SMTP. Deploys target Vercel (API routes
+need a server — GitHub Pages static export can't run them).
 
-1. Create a free account at [formspree.io](https://formspree.io)
-2. Create a form, copy the form ID
-3. Replace `YOUR_FORMSPREE_ID` in two places:
-   - `components/NewsletterForm.tsx`
-   - `components/ContactForm.tsx`
-
-### Option B — Resend (generous free tier, requires API route)
-
-Resend cannot be used directly with `output: 'export'` since it needs a server-side API route. Options:
-- Deploy to Vercel instead of GitHub Pages (remove `output: 'export'`)
-- Use a Cloudflare Worker as a proxy that calls the Resend API
-
-### Option C — Buttondown (free up to 100 subscribers)
-
-Replace the fetch in `components/NewsletterForm.tsx`:
-
-```ts
-const res = await fetch('https://api.buttondown.email/v1/subscribers', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Token ${process.env.NEXT_PUBLIC_BUTTONDOWN_KEY}`,
-  },
-  body: JSON.stringify({ email_address: email }),
-})
-```
+1. Copy `.env.example` to `.env.local`, fill in `GMAIL_APP_PASSWORD`
+   (Google Account → Security → 2-Step Verification ON → App passwords → Mail)
+2. Same keys in Vercel → Project → Settings → Environment Variables
+3. Contact form degrades to `mailto:` if SMTP isn't configured, so leads are never lost
 
 ---
 
@@ -222,7 +202,7 @@ const res = await fetch('https://api.buttondown.email/v1/subscribers', {
 | `github.com/briighter` | ContactForm, Footer | your GitHub URL |
 | `linkedin.com/in/jasonlima` | ContactForm, Footer | your LinkedIn URL |
 | `twitter.com/briighter` | Footer | your Twitter/X handle |
-| `YOUR_FORMSPREE_ID` | NewsletterForm, ContactForm | your Formspree form ID |
+| `GMAIL_APP_PASSWORD` | `.env.local`, Vercel env | Gmail App password (see Forms section) |
 | `Jason Lima` | layout.tsx metadata, blog post author | your name |
 | `briighter.github.io` | metadataBase in layout.tsx | your domain |
 

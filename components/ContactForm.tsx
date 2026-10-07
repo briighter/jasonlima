@@ -2,140 +2,207 @@
 
 import { useState, type FormEvent } from 'react'
 
-const SOCIAL_LINKS = [
-  { label: 'Email directly', href: 'mailto:jason@jasonlima.com', value: 'jason@jasonlima.com'        },
-  { label: 'GitHub',         href: 'https://github.com/briighter', value: 'github.com/briighter'      },
-  { label: 'LinkedIn',       href: 'https://linkedin.com/in/jasonlima', value: 'linkedin.com/in/jasonlima' },
+function FloatField({
+  id,
+  label,
+  type = 'text',
+  multiline = false,
+  required = false,
+  value,
+  onChange,
+}: {
+  id: string
+  label: string
+  type?: string
+  multiline?: boolean
+  required?: boolean
+  value: string
+  onChange: (v: string) => void
+}) {
+  return (
+    <div className="float-label">
+      {multiline ? (
+        <textarea
+          id={id}
+          name={id}
+          placeholder=" "
+          required={required}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          rows={5}
+          aria-label={label}
+        />
+      ) : (
+        <input
+          id={id}
+          name={id}
+          type={type}
+          placeholder=" "
+          required={required}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          aria-label={label}
+          autoComplete={id === 'email' ? 'email' : id === 'name' ? 'name' : 'off'}
+        />
+      )}
+      <label htmlFor={id}>{label}</label>
+    </div>
+  )
+}
+
+const CONTACT_EMAIL = 'limalabsllc@gmail.com'
+const FACEBOOK_URL = 'https://www.facebook.com/LimaLabsTech'
+
+const SERVICE_OPTIONS = [
+  'AI chatbot / customer support',
+  'Workflow automation (save hours weekly)',
+  'Custom web app / internal tool',
+  'Mobile app (iOS + Android)',
+  'New / fix business website',
+  'Something else — I’ll explain below',
 ]
 
 export default function ContactForm() {
-  const [name,    setName]    = useState('')
-  const [email,   setEmail]   = useState('')
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [service, setService] = useState(SERVICE_OPTIONS[0])
   const [message, setMessage] = useState('')
-  const [status,  setStatus]  = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setStatus('loading')
 
     try {
-      const res = await fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ name, email, service, message }),
       })
       if (res.ok) {
         setStatus('success')
         setName(''); setEmail(''); setMessage('')
       } else {
-        setStatus('error')
+        // Backend unavailable — fall back to mailto so the lead is never lost
+        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+          `Project inquiry — ${service} — ${name}`
+        )}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\nNeed: ${service}\n\n${message}`)}`
+        setStatus('success')
       }
     } catch {
-      setStatus('error')
+      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
+        `Project inquiry — ${service}`
+      )}&body=${encodeURIComponent(message)}`
+      setStatus('success')
     }
   }
 
   return (
     <div className="contact-page">
-      {/* Dark header */}
-      <header className="section section--dark">
-        <div className="container">
-          <span className="eyebrow">{'// 04'} &mdash; contact</span>
-          <h1 className="section-title" style={{ color: 'var(--color-dk-ink)', marginTop: 'var(--sp-3)', maxWidth: '18ch' }}>
-            Let&apos;s talk about <em style={{ color: 'var(--color-accent)' }}>something real.</em>
-          </h1>
-          <p style={{ color: 'var(--color-dk-muted)', fontFamily: 'var(--font-body)', fontSize: 'var(--t-lg)', maxWidth: '520px', marginTop: 'var(--sp-4)', lineHeight: 1.65 }}>
-            Open to interesting conversations &mdash; engineering challenges,
-            collaboration, or just trading notes. No pitch decks.
-          </p>
-        </div>
-      </header>
+      <div className="container">
+        <div className="contact-grid">
+          <div>
+            <p className="section-eyebrow">Free fix assessment</p>
 
-      <section className="section">
-        <div className="container">
-          <div className="contact-grid">
-            {/* Left — links */}
-            <div className="contact-info">
-              <p className="eyebrow" style={{ marginBottom: 'var(--sp-6)' }}>Reach me at</p>
-              <div className="contact-links">
-                {SOCIAL_LINKS.map(({ label, href, value }) => (
-                  <a
-                    key={href}
-                    href={href}
-                    target={href.startsWith('http') ? '_blank' : undefined}
-                    rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                    className="contact-link"
-                  >
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 'var(--t-2xs)', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-muted)' }}>{label}</span>
-                    <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--t-sm)', color: 'var(--color-ink)', marginTop: 'var(--sp-1)' }}>{value}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
+            <h1 className="contact-headline">
+              Tell me what&apos;s <em>eating your week.</em>
+            </h1>
 
-            {/* Right — form */}
-            <div>
-              {status === 'success' ? (
-                <div style={{ padding: 'var(--sp-10)', background: 'var(--color-bg-alt)', borderRadius: 'var(--r-md)', border: '1px solid var(--color-border)' }}>
-                  <p style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--t-2xl)', fontWeight: 700, color: 'var(--color-ink)', marginBottom: 'var(--sp-3)' }}>Message sent.</p>
-                  <p style={{ fontFamily: 'var(--font-body)', color: 'var(--color-muted)' }}>
-                    I&apos;ll get back to you within a couple of days.
-                  </p>
-                </div>
-              ) : (
-                <form
-                  onSubmit={handleSubmit}
-                  noValidate
-                  aria-label="Contact form"
-                  style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-5)' }}
-                >
-                  <div className="field">
-                    <label className="field__label" htmlFor="name">Your name</label>
-                    <input
-                      id="name" name="name" type="text"
-                      className="field__input" required
-                      value={name} onChange={e => setName(e.target.value)}
-                      autoComplete="name"
-                    />
-                  </div>
-                  <div className="field">
-                    <label className="field__label" htmlFor="email">Email address</label>
-                    <input
-                      id="email" name="email" type="email"
-                      className="field__input" required
-                      value={email} onChange={e => setEmail(e.target.value)}
-                      autoComplete="email"
-                    />
-                  </div>
-                  <div className="field">
-                    <label className="field__label" htmlFor="message">Your message</label>
-                    <textarea
-                      id="message" name="message"
-                      className="field__textarea" required rows={5}
-                      value={message} onChange={e => setMessage(e.target.value)}
-                    />
-                  </div>
+            <p className="contact-blurb">
+              20 minutes. You describe the manual work, missed follow-ups, or
+              messy spreadsheets. I tell you the simplest fix — with a fixed
+              price if you want me to build it. No jargon, no pressure.
+            </p>
 
-                  {status === 'error' && (
-                    <p role="alert" style={{ color: '#c0392b', fontFamily: 'var(--font-body)', fontSize: 'var(--t-sm)' }}>
-                      Something went wrong. Try emailing directly instead.
-                    </p>
-                  )}
+            <ul className="contact-steps" aria-label="What happens next">
+              <li><strong>1.</strong> You send this 60-sec form</li>
+              <li><strong>2.</strong> I reply within 1 business day</li>
+              <li><strong>3.</strong> Free diagnostic call + plain-English plan</li>
+            </ul>
 
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={status === 'loading'}
-                    style={{ alignSelf: 'flex-start' }}
-                  >
-                    {status === 'loading' ? 'Sending\u2026' : 'Send message'}
-                  </button>
-                </form>
-              )}
+            <div className="contact-social-links">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="contact-social-link link-animate">
+                <span className="contact-social-link__label">Prefer email directly?</span>
+                <span className="contact-social-link__value">{CONTACT_EMAIL}</span>
+              </a>
+              <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="contact-social-link link-animate">
+                <span className="contact-social-link__label">Message on Facebook</span>
+                <span className="contact-social-link__value">facebook.com/LimaLabsTech</span>
+              </a>
             </div>
           </div>
+
+          <div>
+            {status === 'success' ? (
+              <div className="contact-success">
+                <p className="contact-success__title">Got it. I&apos;ll reply fast.</p>
+                <p className="contact-success__sub">
+                  I respond within 1 business day. Need me sooner? Email{' '}
+                  <a href={`mailto:${CONTACT_EMAIL}`} style={{ textDecoration: 'underline' }}>{CONTACT_EMAIL}</a>{' '}
+                  or message{' '}
+                  <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>
+                    Lima Labs on Facebook
+                  </a>.
+                </p>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleSubmit}
+                noValidate
+                aria-label="Free fix assessment form"
+                className="contact-form"
+              >
+                <FloatField id="name" label="Your name" value={name} onChange={setName} required />
+                <FloatField id="email" label="Work email" type="email" value={email} onChange={setEmail} required />
+
+                <div className="float-label float-label--select">
+                  <label htmlFor="service" style={{ position: 'static', transform: 'none', fontSize: 'var(--text-xs)', textTransform: 'uppercase', letterSpacing: 'var(--tracking-wide)', color: 'var(--color-muted)' }}>
+                    What do you need fixed?
+                  </label>
+                  <select
+                    id="service"
+                    name="service"
+                    value={service}
+                    onChange={e => setService(e.target.value)}
+                    className="contact-select"
+                    aria-label="What do you need fixed?"
+                  >
+                    {SERVICE_OPTIONS.map(opt => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <FloatField
+                  id="message"
+                  label="What is costing you time or customers right now? (2-3 sentences is perfect)"
+                  multiline
+                  value={message}
+                  onChange={setMessage}
+                  required
+                />
+
+                {status === 'error' && (
+                  <p role="alert" className="contact-form__error">
+                    Something went wrong. Email me directly at {CONTACT_EMAIL} instead.
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  className="btn btn-primary contact-form__submit"
+                  disabled={status === 'loading'}
+                >
+                  {status === 'loading' ? 'Sending…' : 'Get My Free Assessment →'}
+                </button>
+                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-muted-light)' }}>
+                  No spam. No newsletter signup. Just a reply from me.
+                </p>
+              </form>
+            )}
+          </div>
         </div>
-      </section>
+      </div>
     </div>
   )
 }
