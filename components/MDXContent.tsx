@@ -1,4 +1,4 @@
-import { MDXRemote, type MDXRemoteSerializeResult } from 'next-mdx-remote/rsc'
+import { MDXRemote } from 'next-mdx-remote/rsc'
 import Image, { type ImageProps } from 'next/image'
 
 /* ──────────────────────────────────────────────────
