@@ -1,208 +1,253 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { SERVICES, SITE } from '@/lib/site'
 
-function FloatField({
-  id,
-  label,
-  type = 'text',
-  multiline = false,
-  required = false,
-  value,
-  onChange,
-}: {
-  id: string
-  label: string
-  type?: string
-  multiline?: boolean
-  required?: boolean
-  value: string
-  onChange: (v: string) => void
-}) {
-  return (
-    <div className="float-label">
-      {multiline ? (
-        <textarea
-          id={id}
-          name={id}
-          placeholder=" "
-          required={required}
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          rows={5}
-          aria-label={label}
-        />
-      ) : (
-        <input
-          id={id}
-          name={id}
-          type={type}
-          placeholder=" "
-          required={required}
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          aria-label={label}
-          autoComplete={id === 'email' ? 'email' : id === 'name' ? 'name' : 'off'}
-        />
-      )}
-      <label htmlFor={id}>{label}</label>
-    </div>
-  )
-}
-
-const CONTACT_EMAIL = 'limalabsllc@gmail.com'
-const FACEBOOK_URL = 'https://www.facebook.com/LimaLabsTech'
-
-const SERVICE_OPTIONS = [
-  'AI chatbot / customer support',
-  'Workflow automation (save hours weekly)',
-  'Custom web app / internal tool',
-  'Mobile app (iOS + Android)',
-  'New / fix business website',
-  'Something else — I’ll explain below',
+const BUDGETS = [
+  'Under $5,000',
+  '$5,000 – $15,000',
+  '$15,000 – $30,000',
+  '$30,000+',
+  'Not sure yet',
 ]
 
 export default function ContactForm() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [service, setService] = useState(SERVICE_OPTIONS[0])
+  const [company, setCompany] = useState('')
+  const [service, setService] = useState('')
+  const [budget, setBudget] = useState('')
   const [message, setMessage] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'sent'>('idle')
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle')
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setStatus('loading')
+  useEffect(() => {
+    return () => {
+      if (copyTimer.current) clearTimeout(copyTimer.current)
+    }
+  }, [])
+
+  const getBrief = (withPlaceholders = false) => {
+    const line = (label: string, value: string, fallback: string) => {
+      const resolved = value || (withPlaceholders ? fallback : '')
+      return resolved ? `${label}: ${resolved}` : null
+    }
+
+    return [
+      line('Name', name, '[your name]'),
+      line('Email', email, '[your email]'),
+      line('Company', company, '[optional]'),
+      line('Interested in', service, '[choose a service]'),
+      line('Budget', budget, '[choose a budget range]'),
+      '',
+      "What's slowing me down:",
+      message ||
+        (withPlaceholders
+          ? '[describe the repetitive work, how often it happens, and who does it]'
+          : ''),
+    ]
+      .filter(item => item !== null)
+      .join('\n')
+  }
+
+  const handleCopy = async () => {
+    const brief = getBrief(true)
 
     try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ name, email, service, message }),
-      })
-      if (res.ok) {
-        setStatus('success')
-        setName(''); setEmail(''); setMessage('')
-      } else {
-        // Backend unavailable — fall back to mailto so the lead is never lost
-        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-          `Project inquiry — ${service} — ${name}`
-        )}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\nNeed: ${service}\n\n${message}`)}`
-        setStatus('success')
-      }
+      await navigator.clipboard.writeText(brief)
+      setCopyStatus('copied')
     } catch {
-      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-        `Project inquiry — ${service}`
-      )}&body=${encodeURIComponent(message)}`
-      setStatus('success')
+      // Fallback for browsers without the Clipboard API or without permission.
+      const area = document.createElement('textarea')
+      area.value = brief
+      area.setAttribute('readonly', '')
+      area.style.position = 'fixed'
+      area.style.opacity = '0'
+      document.body.appendChild(area)
+      area.select()
+
+      try {
+        const copied = document.execCommand('copy')
+        setCopyStatus(copied ? 'copied' : 'error')
+      } catch {
+        setCopyStatus('error')
+      } finally {
+        area.remove()
+      }
     }
+
+    if (copyTimer.current) clearTimeout(copyTimer.current)
+    copyTimer.current = setTimeout(() => setCopyStatus('idle'), 2600)
+  }
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    const subject = encodeURIComponent(`Project inquiry — ${name || 'New project'}`)
+    const body = encodeURIComponent(getBrief())
+
+    window.location.href = `mailto:${SITE.email}?subject=${subject}&body=${body}`
+    setStatus('sent')
+  }
+
+  if (status === 'sent') {
+    return (
+      <div className="contact-success">
+        <span className="contact-success__mark" aria-hidden="true">✦</span>
+        <h2 className="contact-success__title">Almost there.</h2>
+        <p className="contact-success__text">
+          Your email app should be open with the project details filled in. Press send
+          and it lands in my inbox.
+        </p>
+        <p className="contact-success__text">
+          Nothing happened? Email me directly at{' '}
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+        </p>
+        <button type="button" className="btn btn-ghost" onClick={() => setStatus('idle')}>
+          Back to the form
+        </button>
+      </div>
+    )
   }
 
   return (
-    <div className="contact-page">
-      <div className="container">
-        <div className="contact-grid">
-          <div>
-            <p className="section-eyebrow">Free fix assessment</p>
-
-            <h1 className="contact-headline">
-              Tell me what&apos;s <em>eating your week.</em>
-            </h1>
-
-            <p className="contact-blurb">
-              20 minutes. You describe the manual work, missed follow-ups, or
-              messy spreadsheets. I tell you the simplest fix — with a fixed
-              price if you want me to build it. No jargon, no pressure.
-            </p>
-
-            <ul className="contact-steps" aria-label="What happens next">
-              <li><strong>1.</strong> You send this 60-sec form</li>
-              <li><strong>2.</strong> I reply within 1 business day</li>
-              <li><strong>3.</strong> Free diagnostic call + plain-English plan</li>
-            </ul>
-
-            <div className="contact-social-links">
-              <a href={`mailto:${CONTACT_EMAIL}`} className="contact-social-link link-animate">
-                <span className="contact-social-link__label">Prefer email directly?</span>
-                <span className="contact-social-link__value">{CONTACT_EMAIL}</span>
-              </a>
-              <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" className="contact-social-link link-animate">
-                <span className="contact-social-link__label">Message on Facebook</span>
-                <span className="contact-social-link__value">facebook.com/LimaLabsTech</span>
-              </a>
-            </div>
-          </div>
-
-          <div>
-            {status === 'success' ? (
-              <div className="contact-success">
-                <p className="contact-success__title">Got it. I&apos;ll reply fast.</p>
-                <p className="contact-success__sub">
-                  I respond within 1 business day. Need me sooner? Email{' '}
-                  <a href={`mailto:${CONTACT_EMAIL}`} style={{ textDecoration: 'underline' }}>{CONTACT_EMAIL}</a>{' '}
-                  or message{' '}
-                  <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline' }}>
-                    Lima Labs on Facebook
-                  </a>.
-                </p>
-              </div>
-            ) : (
-              <form
-                onSubmit={handleSubmit}
-                noValidate
-                aria-label="Free fix assessment form"
-                className="contact-form"
-              >
-                <FloatField id="name" label="Your name" value={name} onChange={setName} required />
-                <FloatField id="email" label="Work email" type="email" value={email} onChange={setEmail} required />
-
-                <div className="float-label float-label--select">
-                  <label htmlFor="service" style={{ position: 'static', transform: 'none', fontSize: 'var(--text-xs)', textTransform: 'uppercase', letterSpacing: 'var(--tracking-wide)', color: 'var(--color-muted)' }}>
-                    What do you need fixed?
-                  </label>
-                  <select
-                    id="service"
-                    name="service"
-                    value={service}
-                    onChange={e => setService(e.target.value)}
-                    className="contact-select"
-                    aria-label="What do you need fixed?"
-                  >
-                    {SERVICE_OPTIONS.map(opt => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <FloatField
-                  id="message"
-                  label="What is costing you time or customers right now? (2-3 sentences is perfect)"
-                  multiline
-                  value={message}
-                  onChange={setMessage}
-                  required
-                />
-
-                {status === 'error' && (
-                  <p role="alert" className="contact-form__error">
-                    Something went wrong. Email me directly at {CONTACT_EMAIL} instead.
-                  </p>
-                )}
-
-                <button
-                  type="submit"
-                  className="btn btn-primary contact-form__submit"
-                  disabled={status === 'loading'}
-                >
-                  {status === 'loading' ? 'Sending…' : 'Get My Free Assessment →'}
-                </button>
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--color-muted-light)' }}>
-                  No spam. No newsletter signup. Just a reply from me.
-                </p>
-              </form>
-            )}
-          </div>
+    <form className="contact-form" onSubmit={handleSubmit} aria-label="Project inquiry form">
+      <div className="contact-form__row">
+        <div className="field">
+          <label className="field__label" htmlFor="name">Your name</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            className="field__input"
+            required
+            value={name}
+            onChange={e => setName(e.target.value)}
+            autoComplete="name"
+            placeholder="Alex Morgan"
+          />
+        </div>
+        <div className="field">
+          <label className="field__label" htmlFor="email">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            className="field__input"
+            required
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            autoComplete="email"
+            placeholder="alex@company.com"
+          />
         </div>
       </div>
-    </div>
+
+      <div className="contact-form__row">
+        <div className="field">
+          <label className="field__label" htmlFor="company">Company <span>(optional)</span></label>
+          <input
+            id="company"
+            name="company"
+            type="text"
+            className="field__input"
+            value={company}
+            onChange={e => setCompany(e.target.value)}
+            autoComplete="organization"
+            placeholder="Company name"
+          />
+        </div>
+        <div className="field">
+          <label className="field__label" htmlFor="budget">Budget range</label>
+          <select
+            id="budget"
+            name="budget"
+            className="field__input field__select"
+            value={budget}
+            onChange={e => setBudget(e.target.value)}
+          >
+            <option value="">Select a range</option>
+            {BUDGETS.map(b => <option key={b} value={b}>{b}</option>)}
+          </select>
+        </div>
+      </div>
+
+      <div className="field">
+        <label className="field__label" htmlFor="service">What do you need?</label>
+        <select
+          id="service"
+          name="service"
+          className="field__input field__select"
+          value={service}
+          onChange={e => setService(e.target.value)}
+        >
+          <option value="">Select a starting point</option>
+          {SERVICES.map(s => <option key={s.title} value={s.title}>{s.title}</option>)}
+          <option value="Fractional CTO">Fractional CTO</option>
+          <option value="Something else">Something else</option>
+        </select>
+      </div>
+
+      <div className="field">
+        <label className="field__label" htmlFor="message">What&apos;s slowing you down?</label>
+        <textarea
+          id="message"
+          name="message"
+          className="field__textarea"
+          required
+          rows={6}
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+          placeholder="e.g. Our team spends 20 hours a week copying data between the CRM, spreadsheets, and invoices. It should be automatic."
+        />
+      </div>
+
+      <div className="contact-form__footer">
+        <button type="submit" className="btn btn-primary">
+          Send project brief <span aria-hidden="true">→</span>
+        </button>
+        <p className="contact-form__note">
+          This opens your email app with the details filled in.
+        </p>
+      </div>
+
+      <div className="contact-form__direct">
+        <span>
+          Prefer to write directly? <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        </span>
+        <button
+          type="button"
+          className={`copy-brief${copyStatus === 'copied' ? ' is-copied' : ''}`}
+          onClick={handleCopy}
+          title="Copy your answers as an email-ready brief"
+        >
+          <span className="copy-brief__icon" aria-hidden="true">
+            {copyStatus === 'copied' ? (
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                <path d="m3 8.5 3 3 7-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            ) : (
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                <rect x="5.25" y="5.25" width="8" height="8.5" rx="1.4" stroke="currentColor" strokeWidth="1.2" />
+                <path d="M10.75 5.25V4.4A1.4 1.4 0 0 0 9.35 3h-5.6A1.4 1.4 0 0 0 2.35 4.4v6.1a1.4 1.4 0 0 0 1.4 1.4h1.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+              </svg>
+            )}
+          </span>
+          {copyStatus === 'copied'
+            ? 'Copied'
+            : copyStatus === 'error'
+              ? 'Copy failed'
+              : 'Copy brief'}
+        </button>
+        <span className="sr-only" role="status" aria-live="polite">
+          {copyStatus === 'copied'
+            ? 'Project brief copied to clipboard. Paste it into your email and fill in any missing details.'
+            : copyStatus === 'error'
+              ? 'Could not copy the project brief. Select the fields manually.'
+              : ''}
+        </span>
+      </div>
+    </form>
   )
 }

@@ -62,7 +62,7 @@ export default async function PostPage({
 
       <article className="post-page">
         {/* ── Post header ── */}
-        <header className="post-header section section--dark">
+        <header className="post-header">
           <div className="container container--narrow">
             <Link href="/blog" className="post-header__back">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

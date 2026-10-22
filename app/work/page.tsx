@@ -1,27 +1,42 @@
 import type { Metadata } from 'next'
+import StarMark from '@/components/StarMark'
 import { getAllProjects } from '@/lib/projects'
 import WorkClient from './WorkClient'
 
 export const metadata: Metadata = {
-  title: 'Work — Jason Lima',
-  description: 'Apps, tools, and systems built with care.',
+  title: 'Work',
+  description:
+    'Products, platforms, and internal systems designed and built end to end by Jason Lima — web apps, mobile apps, AI tools, and automation.',
 }
 
 export default function WorkPage() {
   const projects = getAllProjects()
-  const allTags  = [...new Set(projects.flatMap(p => p.tags))].sort()
+  const allTags = [...new Set(projects.flatMap(p => p.tags))].sort()
 
   return (
     <div className="work-page">
-      <header className="work-header section section--dark">
+      <header className="page-header">
         <div className="container">
-          <span className="eyebrow">{'// 01'} &mdash; work</span>
-          <h1 className="section-title" style={{ color: 'var(--color-dk-ink)', marginTop: 'var(--sp-3)' }}>
-            Selected Work
-          </h1>
-          <p style={{ color: 'var(--color-dk-muted)', fontFamily: 'var(--font-body)', fontSize: 'var(--t-lg)', maxWidth: '540px', marginTop: 'var(--sp-4)', lineHeight: 1.6 }}>
-            {projects.length} project{projects.length !== 1 ? 's' : ''} &mdash; open source tools, web apps, and backend systems.
-          </p>
+          <div className="page-header__inner">
+            <span className="eyebrow">
+              <StarMark size={11} />
+              Selected work
+            </span>
+            <h1 className="page-header__title">
+              Products, platforms, and{' '}
+              <span className="text-accent">systems.</span>
+            </h1>
+            <p className="page-header__lead">
+              {projects.length} projects — mobile apps, AI platforms, internal tools, and
+              the occasional experiment. Every one designed, built, and shipped end to end.
+            </p>
+            <div className="page-header__meta">
+              <span className="page-header__meta-item">Web</span>
+              <span className="page-header__meta-item">Mobile</span>
+              <span className="page-header__meta-item">AI / SaaS</span>
+              <span className="page-header__meta-item">Internal tools</span>
+            </div>
+          </div>
         </div>
       </header>
 

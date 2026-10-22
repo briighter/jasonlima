@@ -1,161 +1,213 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import StarMark from '@/components/StarMark'
+import { SITE } from '@/lib/site'
 
 export const metadata: Metadata = {
-  title: 'About — Jason Lima, Freelance Solutions Engineer',
+  title: 'About',
   description:
-    'Business + Computer Science background. I help small businesses save time and win customers with AI, automation, web apps, mobile apps, and websites. Direct, fixed-price, no agency markup.',
+    'Jason Lima is a freelance software engineer and fractional CTO with six years of enterprise experience and a background in Computer Science and Business Information Systems.',
 }
 
 const EXPERIENCE = [
   {
-    role: 'Freelance Solutions Engineer — Lima Labs',
-    company: 'Helping small businesses with AI, automation & apps',
-    period: '2024 – Present',
+    role: 'Software Engineer',
+    company: 'Fidelity Investments',
+    period: 'Jun 2021 — Present',
     description:
-      'Diagnostic-first builds: AI chatbots, workflow automations, custom web apps, mobile apps, and high-converting websites. Fixed pricing, plain-English handoffs, owner owns everything.',
+      'Full-stack engineering on large-scale financial systems serving millions of users. Designing software infrastructure, leading feature delivery end to end, and contributing across the stack at one of the largest asset managers in the world.',
   },
   {
-    role: 'Associate / Software Engineer',
-    company: 'Product engineering teams',
-    period: '2021 – 2024',
+    role: 'Associate Software Engineer',
+    company: 'Fidelity Investments',
+    period: 'Jan 2021 — Jun 2021',
     description:
-      'Full-stack product work — TypeScript, React/Next.js, Node, PostgreSQL. Shipped APIs, dashboards, and customer-facing features. Learned what actually holds up in production.',
+      'Promoted from intern to full-time engineer within six months. Ramped quickly on production codebases and began contributing to core platform work.',
   },
   {
-    role: 'Business Information Systems + Computer Science',
-    company: 'SNHU — dual background',
-    period: 'Foundation',
+    role: 'Software Engineer Intern',
+    company: 'Fidelity Investments',
+    period: 'Jun 2020 — Dec 2020',
     description:
-      'Business first, then engineering. That combo is why I scope by ROI — time saved and customers won — not by lines of code.',
+      'Six-month internship building internal tooling and gaining hands-on experience with enterprise-scale software development practices.',
+  },
+  {
+    role: 'Lead Quality Manager',
+    company: 'CVS Health',
+    period: 'Jan 2020 — May 2020',
+    description:
+      'Led quality and process operations at a major pharmacy retail location. Saw firsthand how much operational time disappears into manual tracking.',
+  },
+  {
+    role: 'Quality and Process Manager',
+    company: 'CVS Health',
+    period: 'Aug 2018 — Jan 2020',
+    description:
+      'Managed store quality, compliance, and operational processes. Built systems for tracking and improving team performance — the first automation work.',
   },
 ]
 
 const STACK = [
-  { category: 'AI & Automation', items: ['AI chatbots (site + Messenger)', 'RAG over your docs', 'Zapier / Make / custom scripts', 'Lead follow-up flows', 'Review & scheduling flows'] },
-  { category: 'Web & Mobile', items: ['Next.js / React / TypeScript', 'Node.js APIs', 'iOS + Android (cross-platform)', 'Booking & ordering flows', 'Customer portals'] },
-  { category: 'Websites that sell', items: ['Local SEO setup', 'Fast mobile-first builds', 'Google Business + Maps', 'Call / booking conversion', 'Analytics that owners read'] },
-  { category: 'Data & Integrations', items: ['PostgreSQL / SQLite', 'Stripe / QuickBooks / CRM sync', 'Dashboards owners use', 'CSV → system migrations', 'Backups & ownership docs'] },
+  { category: 'Languages', items: ['TypeScript', 'JavaScript', 'Go', 'Python', 'SQL'] },
+  { category: 'Frontend', items: ['React', 'Next.js', 'React Native', 'Expo', 'Accessibility'] },
+  { category: 'Backend', items: ['Node.js', 'REST & GraphQL', 'WebSockets', 'Auth', 'Queues'] },
+  { category: 'Data & AI', items: ['PostgreSQL', 'Redis', 'Prisma', 'LLM APIs', 'Vector search'] },
+  { category: 'Infrastructure', items: ['Docker', 'AWS', 'GitHub Actions', 'Vercel', 'Monitoring'] },
 ]
 
-const VALUES = [
+const PRINCIPLES = [
   {
-    title: 'Business outcome first',
-    body: 'If it doesn’t save hours or win customers, I won’t sell it to you. I’ll tell you on the first call if software isn’t the answer.',
+    num: '01',
+    title: 'ROI before architecture',
+    body: 'The first question is never "what stack?" It is "what does this cost today, and what will it save?" If the math does not work, the project does not start.',
   },
   {
-    title: 'Plain English, always',
-    body: 'No ticket black holes. Weekly updates, short video walkthroughs, and docs you can actually use without calling me.',
+    num: '02',
+    title: 'Small scope, shipped',
+    body: 'I would rather ship the one workflow that saves ten hours a week than spend six months on a platform nobody uses. Value compounds after launch, not after planning.',
   },
   {
-    title: 'You own everything',
-    body: 'Code, accounts, domains, docs — all in your name from day one. Fixed price in writing before I start.',
+    num: '03',
+    title: 'You own the outcome',
+    body: 'Code, infrastructure, documentation, and accounts stay yours. I am a temporary accelerator, not a permanent dependency.',
   },
 ]
 
 export default function AboutPage() {
   return (
-    <main className="about-page">
-      <section className="about-hero">
+    <div className="about-page">
+      <header className="page-header">
         <div className="container">
-          <div className="about-hero__inner">
-            <div className="about-hero__text">
-              <p className="section-eyebrow">About — why owners hire me</p>
-              <h1 className="about-hero__title">
-                I translate business pain <em>into simple working software.</em>
-              </h1>
-              <p className="about-hero__bio">
-                I&apos;m Jason Lima, freelance solutions engineer behind Lima Labs.
-                Business degree + Computer Science degree means I don&apos;t just
-                write code — I help you decide what&apos;s worth building, then
-                build it fast: AI helpers, automations, web apps, mobile apps,
-                and websites that bring customers.
+          <div className="page-header__inner">
+            <span className="eyebrow">
+              <StarMark size={11} />
+              About
+            </span>
+            <h1 className="page-header__title">
+              Engineer, operator, and your{' '}
+              <span className="text-accent">technical co-pilot.</span>
+            </h1>
+            <p className="page-header__lead">
+              I&apos;m Jason Lima — a freelance software engineer and fractional CTO. I
+              help small teams replace manual work with software that pays for itself.
+            </p>
+            <div className="page-header__meta">
+              <span className="page-header__meta-item">{SITE.location}</span>
+              <span className="page-header__meta-item">6+ years in enterprise software</span>
+              <span className="page-header__meta-item">Available for new projects</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section className="section">
+        <div className="container">
+          <div className="about-grid">
+            <div className="about-bio">
+              <span className="mono-label">The short version</span>
+              <p>
+                For six years I&apos;ve built software inside a Fortune 100 financial
+                company — systems used by millions of people, under the kind of
+                compliance and reliability constraints that make you careful. I&apos;ve
+                also designed, built, and shipped my own products end to end, which
+                teaches a different skill: deciding what not to build.
               </p>
-              <p className="about-hero__bio">
-                Solo by design: you talk to the person doing the work. Email me at{' '}
-                <a href="mailto:limalabsllc@gmail.com" style={{ textDecoration: 'underline' }}>
-                  limalabsllc@gmail.com
-                </a>{' '}
-                or message{' '}
-                <a
-                  href="https://www.facebook.com/LimaLabsTech"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ textDecoration: 'underline' }}
-                >
-                  Lima Labs on Facebook
-                </a>.
+              <p>
+                Freelancing lets me bring both to smaller teams. The engineering
+                discipline of an enterprise, the speed and ownership of a founder, and a
+                bias toward measurable outcomes instead of billable hours.
               </p>
-              <div className="about-hero__cta">
+              <p>
+                My background is Computer Science and Business Information Systems. That
+                combination is the whole job: understand how the business actually makes
+                money, then remove the friction between the people doing the work and the
+                systems supporting them.
+              </p>
+              <div className="about-bio__actions">
                 <Link href="/contact" className="btn btn-primary">
-                  Get free fix assessment →
+                  Start a project
+                  <span aria-hidden="true">→</span>
                 </Link>
                 <Link href="/work" className="btn btn-ghost">
-                  See work
+                  See my work
                 </Link>
               </div>
             </div>
 
-            <div className="about-hero__avatar-wrap">
-              <div className="about-avatar" aria-hidden="true">
-                <span className="about-avatar__initials">JL</span>
+            <div className="about-aside">
+              <div className="about-stat-block">
+                <span className="about-stat-block__num">6+</span>
+                <span className="about-stat-block__label">Years shipping software</span>
               </div>
-              <div className="about-status-card">
-                <span className="about-status-dot" aria-hidden="true" />
-                <div>
-                  <p className="about-status-card__label">Currently</p>
-                  <p className="about-status-card__value">Taking new projects</p>
-                </div>
+              <div className="about-stat-block">
+                <span className="about-stat-block__num">20+</span>
+                <span className="about-stat-block__label">Products and tools built</span>
+              </div>
+              <div className="about-stat-block">
+                <span className="about-stat-block__num">100%</span>
+                <span className="about-stat-block__label">Fixed-scope engagements</span>
+              </div>
+              <div className="about-stat-block">
+                <span className="about-stat-block__num">∞</span>
+                <span className="about-stat-block__label">Still learning</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="about-section">
+      <section className="section section--tint">
         <div className="container">
-          <div className="reveal">
-            <p className="section-eyebrow">Background</p>
-            <h2 className="about-section__title">Experience that matters to you</h2>
+          <div className="section-head">
+            <span className="eyebrow">
+              <StarMark size={11} />
+              Experience
+            </span>
+            <div className="section-head__row">
+              <h2 className="display">Where I&apos;ve worked</h2>
+            </div>
           </div>
 
           <div className="about-timeline">
             {EXPERIENCE.map((item, i) => (
-              <div key={i} className="reveal about-timeline__item" data-delay={String(i * 100)}>
-                <div className="about-timeline__marker" aria-hidden="true" />
-                <div className="about-timeline__content">
-                  <div className="about-timeline__header">
-                    <div>
-                      <h3 className="about-timeline__role">{item.role}</h3>
-                      <p className="about-timeline__company">{item.company}</p>
-                    </div>
-                    <time className="about-timeline__period">{item.period}</time>
+              <div key={i} className="reveal about-timeline__item" data-delay={String(i * 70)}>
+                <div className="about-timeline__header">
+                  <div>
+                    <h3 className="about-timeline__role">{item.role}</h3>
+                    <p className="about-timeline__company">{item.company}</p>
                   </div>
-                  <p className="about-timeline__desc">{item.description}</p>
+                  <time className="about-timeline__period">{item.period}</time>
                 </div>
+                <p className="about-timeline__desc">{item.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="about-section about-section--alt">
+      <section className="section">
         <div className="container">
-          <div className="reveal">
-            <p className="section-eyebrow">Toolbox</p>
-            <h2 className="about-section__title">What I can build for your business</h2>
+          <div className="section-head">
+            <span className="eyebrow">
+              <StarMark size={11} />
+              Capabilities
+            </span>
+            <div className="section-head__row">
+              <h2 className="display">Tools I reach for</h2>
+              <p className="section-head__text">
+                Chosen for the problem, not the résumé. These are the defaults I know
+                deeply — not the only things I can use.
+              </p>
+            </div>
           </div>
 
-          <div className="about-stack-grid">
+          <div className="about-skills-grid">
             {STACK.map(({ category, items }, i) => (
-              <div key={category} className="reveal about-stack-group" data-delay={String(i * 80)}>
-                <h3 className="about-stack-group__label">{category}</h3>
-                <ul className="about-stack-group__list">
+              <div key={category} className="reveal skill-group" data-delay={String(i * 60)}>
+                <h3 className="skill-group__label">{category}</h3>
+                <ul className="skill-group__list" role="list">
                   {items.map(item => (
-                    <li key={item} className="about-stack-group__item">
-                      <span className="about-stack-group__dot" aria-hidden="true" />
-                      {item}
-                    </li>
+                    <li key={item}>{item}</li>
                   ))}
                 </ul>
               </div>
@@ -164,50 +216,44 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="about-section">
+      <section className="section section--tint">
         <div className="container">
-          <div className="reveal">
-            <p className="section-eyebrow">How I work</p>
-            <h2 className="about-section__title">What you can expect</h2>
+          <div className="section-head">
+            <span className="eyebrow">
+              <StarMark size={11} />
+              How I work
+            </span>
+            <div className="section-head__row">
+              <h2 className="display">Three rules I don&apos;t break</h2>
+            </div>
           </div>
 
-          <div className="about-values-grid">
-            {VALUES.map(({ title, body }, i) => (
-              <div key={title} className="reveal about-value-card" data-delay={String(i * 100)}>
-                <span className="about-value-card__num">0{i + 1}</span>
-                <h3 className="about-value-card__title">{title}</h3>
-                <p className="about-value-card__body">{body}</p>
-              </div>
+          <div className="principle-grid">
+            {PRINCIPLES.map(({ num, title, body }, i) => (
+              <article key={num} className="principle reveal" data-delay={String(i * 80)}>
+                <span className="principle__num">{num}</span>
+                <h3 className="principle__title">{title}</h3>
+                <p className="principle__body">{body}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="about-cta-section">
+      <section className="section">
         <div className="container">
-          <div className="reveal about-cta-card">
-            <p className="section-eyebrow">Next step</p>
-            <h2 className="about-cta-card__title">Tell me what&apos;s eating your week.</h2>
-            <p className="about-cta-card__body">
-              Free 20-min diagnostic. I&apos;ll map the simplest fix — yours to keep
-              even if we never work together.
-            </p>
-            <div className="about-cta-card__actions">
-              <Link href="/contact" className="btn btn-primary">
-                Get my free assessment →
-              </Link>
-              <a
-                href="https://www.facebook.com/LimaLabsTech"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-outline"
-              >
-                Message on Facebook
-              </a>
+          <div className="inline-cta">
+            <div>
+              <h2>Have a process that eats your week?</h2>
+              <p>Tell me about it. The first conversation is free, and you&apos;ll leave with a straight answer.</p>
             </div>
+            <Link href="/contact" className="btn btn-primary btn-lg">
+              Get a free automation audit
+              <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </div>
       </section>
-    </main>
+    </div>
   )
 }

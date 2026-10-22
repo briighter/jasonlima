@@ -1,29 +1,36 @@
 import type { Metadata } from 'next'
+import StarMark from '@/components/StarMark'
 import { getAllPosts } from '@/lib/posts'
 import BlogClient from './BlogClient'
 
 export const metadata: Metadata = {
-  title: 'Writing — Jason Lima',
+  title: 'Writing',
   description:
-    'Essays, notes, and thinking-out-loud on software engineering, system design, and the craft of building things.',
+    'Essays and notes on software engineering, system design, automation, and the craft of building things that last.',
 }
 
 export default function BlogPage() {
-  const posts   = getAllPosts()
+  const posts = getAllPosts()
   const allTags = [...new Set(posts.flatMap(p => p.tags))].sort()
 
   return (
     <div className="blog-page">
-      <header className="blog-header section section--dark">
+      <header className="page-header">
         <div className="container">
-          <span className="eyebrow">{'// 02'} &mdash; writing</span>
-          <h1 className="section-title" style={{ color: 'var(--color-dk-ink)', marginTop: 'var(--sp-3)' }}>
-            Writing
-          </h1>
-          <p style={{ color: 'var(--color-dk-muted)', fontFamily: 'var(--font-body)', fontSize: 'var(--t-lg)', maxWidth: '540px', marginTop: 'var(--sp-4)', lineHeight: 1.6 }}>
-            {posts.length} {posts.length === 1 ? 'post' : 'posts'} on engineering, design,
-            and building software that lasts.
-          </p>
+          <div className="page-header__inner">
+            <span className="eyebrow">
+              <StarMark size={11} />
+              Writing
+            </span>
+            <h1 className="page-header__title">
+              Notes on systems and{' '}
+              <span className="text-accent">craft.</span>
+            </h1>
+            <p className="page-header__lead">
+              {posts.length} {posts.length === 1 ? 'post' : 'posts'} on engineering,
+              architecture, and building software that survives contact with reality.
+            </p>
+          </div>
         </div>
       </header>
 

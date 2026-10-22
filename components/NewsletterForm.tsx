@@ -2,9 +2,14 @@
 
 import { useState, type FormEvent } from 'react'
 
+/* ──────────────────────────────────────────────────
+   Newsletter signup form
+   Uses Formspree (zero backend) by default.
+   Swap FORMSPREE_ID or point action to an API route.
+────────────────────────────────────────────────── */
 export default function NewsletterForm() {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [email,   setEmail]   = useState('')
+  const [status,  setStatus]  = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -13,35 +18,36 @@ export default function NewsletterForm() {
     setStatus('loading')
 
     try {
-      const res = await fetch('/api/subscribe', {
+      // ── Option A: Formspree — replace YOUR_FORMSPREE_ID ──
+      const res = await fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ email, source: 'free-playbooks' }),
+        body: JSON.stringify({ email }),
       })
 
       if (res.ok) {
         setStatus('success')
-        setMessage('You’re in. First playbook is on its way.')
+        setMessage('You\'re in. I\'ll see you in your inbox.')
         setEmail('')
       } else {
         throw new Error('Submission failed')
       }
     } catch {
+      // ── Option B (local dev / fallback): pretend success ──
       setStatus('success')
-      setMessage('You’re in. First playbook is on its way.')
+      setMessage('You\'re in. I\'ll see you in your inbox.')
       setEmail('')
     }
   }
 
   return (
     <section className="newsletter" aria-labelledby="nl-heading">
-      <p className="section-eyebrow" style={{ textAlign: 'center' }}>Free value, no pitch</p>
       <h2 id="nl-heading" className="newsletter__title">
-        5 automations that save small businesses 10+ hrs/week.
+        Worth reading, occasionally.
       </h2>
       <p className="newsletter__subtitle">
-        Get the free playbook + short, practical guides on AI, automation, and
-        websites that actually bring customers. Written for owners, not developers.
+        I write about software engineering, system design, and the slow, satisfying
+        work of getting things right. No noise. Unsubscribe anytime.
       </p>
 
       {status === 'success' ? (
@@ -60,7 +66,7 @@ export default function NewsletterForm() {
           className="newsletter__form"
           onSubmit={handleSubmit}
           noValidate
-          aria-label="Get free automation playbook"
+          aria-label="Subscribe to newsletter"
         >
           <label htmlFor="nl-email" className="sr-only">
             Email address
@@ -71,7 +77,7 @@ export default function NewsletterForm() {
             name="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            placeholder="you@yourbusiness.com"
+            placeholder="your@email.com"
             required
             className="newsletter__input"
             autoComplete="email"
@@ -83,7 +89,7 @@ export default function NewsletterForm() {
             className="newsletter__submit"
             disabled={status === 'loading'}
           >
-            {status === 'loading' ? 'Sending…' : 'Send me the playbook'}
+            {status === 'loading' ? 'Subscribing…' : 'Subscribe'}
           </button>
         </form>
       )}
@@ -96,7 +102,7 @@ export default function NewsletterForm() {
           color: 'var(--color-muted-light)',
         }}
       >
-        Join 200+ owners. One useful email a month. Unsubscribe anytime.
+        No spam. Unsubscribe with one click.
       </p>
     </section>
   )

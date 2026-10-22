@@ -1,10 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // NOTE: no `output: 'export'` — API routes (/api/contact, /api/subscribe)
-  // need a server. Deploys target Vercel, not GitHub Pages.
-  // For project-subpath deploys, set NEXT_PUBLIC_BASE_PATH=/my-app
+  output: 'export',
+  // For username.github.io repos, basePath should be empty string.
+  // For project repos (e.g. username.github.io/my-project), set NEXT_PUBLIC_BASE_PATH=/my-project
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
-  trailingSlash: true,
+  images: {
+    unoptimized: true, // Required for static export
+  },
+  trailingSlash: true, // Prevents 404s on GitHub Pages
 }
 
 module.exports = nextConfig

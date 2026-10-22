@@ -1,196 +1,287 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import PostCard from '@/components/PostCard'
+import StarMark from '@/components/StarMark'
+import RoiCalculator from '@/components/RoiCalculator'
 import ProjectCard from '@/components/ProjectCard'
-import NewsletterForm from '@/components/NewsletterForm'
+import PostCard from '@/components/PostCard'
+import SocialIcon from '@/components/SocialIcon'
 import { getFeaturedPosts } from '@/lib/posts'
 import { getFeaturedProjects } from '@/lib/projects'
+import { PROCESS, SERVICES, SITE, SOCIALS, STATS } from '@/lib/site'
 
 export const metadata: Metadata = {
-  title: 'Freelance Solutions Engineer — AI, Automation, Web & Mobile Apps for Small Business',
-  description:
-    'I help small businesses stop losing time and customers. AI chatbots that answer instantly, automations that kill busywork, web & mobile apps, and websites that rank and convert. Free 20-min fix assessment.',
+  description: SITE.description,
 }
 
-/* ──────────────────────────────────────────────────
-   HOME — inbound freelance landing
-   Hero → Pains → Free value → Services → Process →
-   Work → About → FAQ → Guides → Lead magnet → CTA
-────────────────────────────────────────────────── */
-export default async function HomePage() {
-  const featuredPosts = await getFeaturedPosts(3)
-  const featuredProjects = await getFeaturedProjects(4)
+const MARQUEE_ITEMS = [
+  'Workflow automation',
+  'Internal tools',
+  'Full-stack web',
+  'React Native',
+  'Systems analysis',
+  'AI integration',
+  'Dashboards',
+  'Fractional CTO',
+  'API architecture',
+  'Process redesign',
+]
+
+interface SectionHeadProps {
+  eyebrow: string
+  title: React.ReactNode
+  text?: string
+  link?: { href: string; label: string }
+  split?: boolean
+}
+
+function SectionHead({ eyebrow, title, text, link, split }: SectionHeadProps) {
+  return (
+    <div className={`section-head${split ? ' section-head--split' : ''}`}>
+      <span className="eyebrow">
+        <StarMark size={11} />
+        {eyebrow}
+      </span>
+      <div className="section-head__row">
+        <h2 className="display">{title}</h2>
+        {text && <p className="section-head__text">{text}</p>}
+        {link && (
+          <Link href={link.href} className="section-link">
+            {link.label} <span aria-hidden="true">→</span>
+          </Link>
+        )}
+      </div>
+    </div>
+  )
+}
+
+export default function HomePage() {
+  const featuredProjects = getFeaturedProjects(3)
+  const featuredPosts = getFeaturedPosts(3)
 
   return (
     <>
-      {/* ── HERO ── */}
+      {/* ── HERO ─────────────────────────────────────────────── */}
       <section className="hero" aria-labelledby="hero-heading">
-        <div className="hero__inner">
-          <p className="hero__eyebrow anim-fade-up anim-delay-0">
-            ● Available for new projects — replies in 1 business day
-          </p>
+        <div className="hero__grid-bg" aria-hidden="true" />
+        <div className="hero__inner container">
+          <div className="hero__copy">
+            <span className="status-pill anim-fade-up">
+              <span className="status-pill__dot" aria-hidden="true" />
+              <span>{SITE.availability}</span>
+              <span className="status-pill__sep" aria-hidden="true" />
+              <span className="status-pill__remote">Remote worldwide</span>
+            </span>
 
-          <h1 id="hero-heading" className="hero__headline anim-fade-up anim-delay-100">
-            I fix expensive business problems <em>with simple tech + AI.</em>
-          </h1>
+            <h1 id="hero-heading" className="hero__headline anim-fade-up anim-delay-75">
+              I automate the work you{' '}
+              <span className="hero__headline-accent">shouldn&apos;t be doing.</span>
+            </h1>
 
-          <p className="hero__description anim-fade-up anim-delay-200">
-            I&apos;m Jason Lima, freelance solutions engineer. I help small
-            businesses stop drowning in manual work and missed leads — with
-            AI chatbots, automations, custom web &amp; mobile apps, and
-            websites that actually bring customers.
-          </p>
+            <p className="hero__sub anim-fade-up anim-delay-150">
+              I&apos;m Jason — a freelance software engineer and fractional CTO. I build
+              the automations, internal tools, apps, and systems that erase repetitive
+              work and pay for themselves.
+            </p>
 
-          <div className="hero__ctas anim-fade-up anim-delay-300">
-            <Link href="/contact" className="btn btn-primary">
-              Get My Free Fix Assessment →
-            </Link>
-            <a href="#services" className="btn btn-outline">
-              See what I can fix
-            </a>
+            <div className="hero__ctas anim-fade-up anim-delay-225">
+              <Link href="/contact" className="btn btn-primary btn-lg">
+                Get a free automation audit
+                <span aria-hidden="true">→</span>
+              </Link>
+              <Link href="#roi" className="btn btn-ghost btn-lg">
+                See the math
+              </Link>
+            </div>
+
+            <ul className="hero__proof anim-fade-up anim-delay-300" role="list">
+              <li>Fixed scope</li>
+              <li>Fixed price</li>
+              <li>You own everything</li>
+            </ul>
           </div>
 
-          <div className="hero__trust anim-fade-up anim-delay-300">
-            <span>✓ No jargon</span>
-            <span>✓ Fixed pricing up front</span>
-            <span>✓ You own everything I build</span>
-          </div>
+          <div className="hero__visual anim-fade-in anim-delay-150" aria-hidden="true">
+            <div className="orbit orbit--1" />
+            <div className="orbit orbit--2" />
+            <div className="orbit orbit--3">
+              <span className="orbit__dot" />
+            </div>
+            <div className="hero__star-wrap">
+              <StarMark size={300} className="hero__star" />
+            </div>
 
-          <div className="hero__contact-row anim-fade-up anim-delay-300">
-            <span>Prefer to just reach out?</span>
-            <a href="mailto:limalabsllc@gmail.com" className="link-animate">limalabsllc@gmail.com</a>
-            <span aria-hidden="true">·</span>
-            <a href="https://www.facebook.com/LimaLabsTech" target="_blank" rel="noopener noreferrer" className="link-animate">Facebook: Lima Labs</a>
+            <div className="hero__chip hero__chip--before">
+              <span className="hero__chip-label">Before</span>
+              <span className="hero__chip-value">14 hrs / week</span>
+              <span className="hero__chip-bar"><span style={{ width: '88%' }} /></span>
+            </div>
+
+            <div className="hero__chip hero__chip--after">
+              <span className="hero__chip-label">After</span>
+              <span className="hero__chip-value">0.2 hrs / week</span>
+              <span className="hero__chip-bar hero__chip-bar--short"><span style={{ width: '6%' }} /></span>
+            </div>
+
+            <div className="hero__chip hero__chip--roi">
+              <span className="hero__chip-label">Payback</span>
+              <span className="hero__chip-value hero__chip-value--accent">2.2 weeks</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── PAINS — SEO + resonance ── */}
-      <section className="section section--surface" aria-labelledby="pains-heading">
-        <div className="container">
-          <p className="section-eyebrow">Does this sound familiar?</p>
-          <h2 id="pains-heading" className="posts-section-title reveal" style={{ marginBottom: 'var(--space-4)' }}>
-            You didn&apos;t start a business to do busywork.
-          </h2>
-          <p className="section-sub reveal">
-            If any of these cost you time or sales every week, that&apos;s exactly what I fix.
-          </p>
-          <div className="pains-grid">
-            {PAINS.map((pain, i) => (
-              <div key={pain.title} className="reveal pain-card" data-delay={String(i * 80)}>
-                <span className="pain-card__icon" aria-hidden="true">{pain.icon}</span>
-                <h3 className="pain-card__title">{pain.title}</h3>
-                <p className="pain-card__body">{pain.body}</p>
-                <p className="pain-card__fix">→ Fix: {pain.fix}</p>
-              </div>
+      {/* ── CAPABILITY MARQUEE ───────────────────────────────── */}
+      <div className="marquee-strip" aria-hidden="true">
+        <div className="marquee">
+          <div className="marquee__track">
+            {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+              <span key={i} className="marquee__item">
+                {item}
+                <span className="marquee__separator">✦</span>
+              </span>
             ))}
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* ── FREE VALUE — jab jab jab ── */}
-      <section className="section" aria-labelledby="free-heading">
+      {/* ── ROI ──────────────────────────────────────────────── */}
+      <section className="section roi-section" id="roi" aria-labelledby="roi-heading">
         <div className="container">
-          <p className="section-eyebrow">Value up front — free</p>
-          <h2 id="free-heading" className="posts-section-title reveal">
-            Get something useful before you pay me anything.
-          </h2>
-          <p className="section-sub reveal">
-            No discovery-call trap. Real help first. If it earns your trust, we talk about a project.
-          </p>
-          <div className="value-grid">
-            {FREEBIES.map((f, i) => (
-              <div key={f.title} className="reveal value-card" data-delay={String(i * 80)}>
-                <p className="value-card__tag">{f.tag}</p>
-                <h3 className="value-card__title">{f.title}</h3>
-                <p className="value-card__body">{f.body}</p>
-                <Link href={f.href} className="btn btn-outline value-card__cta">
-                  {f.cta}
-                </Link>
-              </div>
-            ))}
-          </div>
+          <SectionHead
+            eyebrow="The math"
+            title={
+              <>
+                If it doesn&apos;t pay for itself,
+                <br />
+                <span className="text-accent">don&apos;t build it.</span>
+              </>
+            }
+            text="Most small teams lose 10–30 hours a week to work a script could do. Move the sliders. That number is the annual cost of leaving it manual."
+          />
+          <RoiCalculator />
         </div>
       </section>
 
-      {/* ── SERVICES ── */}
-      <section className="section section--surface" id="services" aria-labelledby="services-heading">
+      {/* ── SERVICES ─────────────────────────────────────────── */}
+      <section className="section section--tint" id="services" aria-labelledby="services-heading">
         <div className="container">
-          <p className="section-eyebrow">What I build for you</p>
-          <h2 id="services-heading" className="posts-section-title reveal">
-            Practical solutions, priced to pay for themselves.
-          </h2>
-          <p className="section-sub reveal">
-            Every project starts with one question: will this save you time or win you customers?
-            If the answer isn&apos;t yes, I won&apos;t build it.
-          </p>
-          <div className="services-grid">
-            {SERVICES.map((s, i) => (
-              <article key={s.title} className="reveal service-card" data-delay={String(i * 60)}>
-                <span className="service-card__icon" aria-hidden="true">{s.icon}</span>
-                <h3 className="service-card__title">{s.title}</h3>
-                <p className="service-card__body">{s.body}</p>
-                <p className="service-card__example"><strong>Example:</strong> {s.example}</p>
-                <Link href="/contact" className="service-card__link link-animate">
-                  Ask if this fits you →
-                </Link>
+          <SectionHead
+            eyebrow="Productized services"
+            title={
+              <>
+                Pick a starting point.
+                <br />
+                <span className="text-accent">I&apos;ll tell you if it&apos;s wrong.</span>
+              </>
+            }
+            text="Fixed-scope products, not open-ended hourly work. Every engagement starts with a number: what it costs, what it replaces, and when it ships."
+          />
+
+          <div className="services">
+            {SERVICES.map(service => (
+              <article key={service.num} className={`service service--${service.accent}`}>
+                <div className="service__top">
+                  <span className="service__num">{service.num}</span>
+                  <span className="service__price">{service.price}</span>
+                </div>
+
+                <h3 className="service__title">{service.title}</h3>
+                <p className="service__tagline">{service.tagline}</p>
+                <p className="service__desc">{service.description}</p>
+
+                <ul className="service__list" role="list">
+                  {service.bullets.map(bullet => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
+
+                <div className="service__foot">
+                  <span className="service__timeline">{service.timeline}</span>
+                  <Link href="/contact" className="service__link">
+                    Scope this <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
               </article>
             ))}
           </div>
-          <div className="reveal" style={{ marginTop: 'var(--space-8)', textAlign: 'center' }}>
-            <Link href="/contact" className="btn btn-primary">
-              Not sure which one you need? Get a free diagnosis →
-            </Link>
-          </div>
-        </div>
-      </section>
 
-      {/* ── PROCESS ── */}
-      <section className="section" id="process" aria-labelledby="process-heading">
-        <div className="container">
-          <p className="section-eyebrow">How it works</p>
-          <h2 id="process-heading" className="posts-section-title reveal">
-            Simple, fixed, no surprises.
-          </h2>
-          <div className="process-grid">
-            {PROCESS.map((p, i) => (
-              <div key={p.title} className="reveal process-card" data-delay={String(i * 100)}>
-                <span className="process-card__num" aria-hidden="true">0{i + 1}</span>
-                <h3 className="process-card__title">{p.title}</h3>
-                <p className="process-card__body">{p.body}</p>
-                <p className="process-card__time">{p.time}</p>
-              </div>
-            ))}
-          </div>
-          <div className="guarantee-bar reveal">
-            <strong>My guarantee:</strong> fixed price in writing before I start.
-            You own all code, logins, and docs. If I can&apos;t help, I&apos;ll say so on the first call.
-          </div>
-        </div>
-      </section>
-
-      {/* ── WORK ── */}
-      {featuredProjects.length > 0 && (
-        <section className="section section--surface" id="work" aria-labelledby="work-heading">
-          <div className="container">
-            <div className="posts-section-header">
-              <div>
-                <p className="section-eyebrow">Proof</p>
-                <h2 id="work-heading" className="posts-section-title reveal">
-                  Selected work
-                </h2>
-              </div>
-              <Link href="/work" className="btn btn-ghost reveal" data-delay="100">
-                All projects →
+          <div className="cto-band">
+            <StarMark size={280} className="cto-band__star" />
+            <div className="cto-band__copy">
+              <span className="mono-label mono-label--light">Fractional CTO</span>
+              <h3>Technical leadership without the full-time hire.</h3>
+              <p>
+                Architecture, hiring, vendor decisions, roadmap, and delivery oversight.
+                A few days a month, exactly when the decisions matter — not a permanent
+                salary.
+              </p>
+            </div>
+            <div className="cto-band__side">
+              <span className="cto-band__price">
+                $3,500<span>/mo</span>
+              </span>
+              <Link href="/contact" className="btn btn-light">
+                Talk about your roadmap
+                <span aria-hidden="true">→</span>
               </Link>
             </div>
-            <div className="bento-grid">
+          </div>
+
+          <p className="services__note">
+            AI integration — document extraction, triage, drafting, search — can be built
+            into any of the above. <Link href="/contact">Tell me what&apos;s manual</Link> and
+            I&apos;ll tell you what&apos;s possible.
+          </p>
+        </div>
+      </section>
+
+      {/* ── PROCESS ──────────────────────────────────────────── */}
+      <section className="section" id="process" aria-labelledby="process-heading">
+        <div className="container">
+          <SectionHead
+            eyebrow="How it works"
+            title={
+              <>
+                From &ldquo;this takes forever&rdquo;
+                <br />
+                <span className="text-accent">to shipped.</span>
+              </>
+            }
+            text="No discovery theater. No 40-page deck. A clear path from the first conversation to software your team actually uses."
+            split
+          />
+
+          <ol className="process" role="list">
+            {PROCESS.map(step => (
+              <li key={step.num} className="process__step">
+                <span className="process__num">{step.num}</span>
+                <h3 className="process__title">{step.title}</h3>
+                <p className="process__body">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* ── SELECTED WORK ────────────────────────────────────── */}
+      {featuredProjects.length > 0 && (
+        <section className="section section--tint" id="work" aria-labelledby="work-heading">
+          <div className="container">
+            <SectionHead
+              eyebrow="Selected work"
+              title={
+                <>
+                  Proof, not promises.
+                </>
+              }
+              link={{ href: '/work', label: 'See all work' }}
+              split
+              text="Products I've designed, built, and shipped end to end — from mobile apps to AI platforms."
+            />
+
+            <div className="home-work-grid">
               {featuredProjects.map((project, i) => (
-                <div
-                  key={project.slug}
-                  className={`bento-appear${project.span === 'wide' ? ' bento-wide' : ''}`}
-                  data-delay={String(i * 80)}
-                >
+                <div key={project.slug} className="reveal" data-delay={String(i * 80)}>
                   <ProjectCard project={project} />
                 </div>
               ))}
@@ -199,105 +290,81 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ── ABOUT TEASER ── */}
-      <section className="section" aria-labelledby="about-heading">
+      {/* ── WHY ME ───────────────────────────────────────────── */}
+      <section className="section" id="about-teaser" aria-labelledby="why-heading">
         <div className="container">
-          <div className="about-grid">
-            <div className="reveal">
-              <p className="section-eyebrow">Why me</p>
-              <h2 id="about-heading" className="about__headline">
-                Business degree + engineering degree. <em>That combo matters.</em>
+          <div className="about-teaser">
+            <div className="about-teaser__copy reveal">
+              <span className="eyebrow">
+                <StarMark size={11} />
+                Why me
+              </span>
+              <h2 className="display">
+                Enterprise engineering.
+                <br />
+                <span className="text-accent">Freelance speed.</span>
               </h2>
-              <div className="about__bio">
-                <p>
-                  Most developers speak code. Most business owners speak revenue.
-                  I speak both. I started in Business Information Systems, then
-                  went deep on software engineering — so I don&apos;t just build
-                  what you ask for, I help you figure out what&apos;s actually
-                  worth building.
-                </p>
-                <p>
-                  I work solo, which means you talk to the person doing the work.
-                  No agency markup, no hand-offs, no disappearing contractors.
-                </p>
-              </div>
-              <div className="about__actions">
-                <Link href="/about" className="btn btn-outline">
-                  More about me
-                </Link>
-                <a href="mailto:limalabsllc@gmail.com" className="btn btn-ghost">
-                  Say hello →
-                </a>
-              </div>
-            </div>
-
-            <div className="about__stats-wrap reveal" data-delay="200">
-              <div className="about__stats-card">
-                <div className="about__stats-inner">
-                  {STATS.map(({ num, label }) => (
-                    <div key={label} className="about__stat">
-                      <span className="about__stat-num">{num}</span>
-                      <span className="about__stat-label">{label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── FAQ — SEO ── */}
-      <section className="section section--surface" aria-labelledby="faq-heading">
-        <div className="container container--narrow-x">
-          <p className="section-eyebrow" style={{ textAlign: 'center' }}>Questions owners ask me</p>
-          <h2 id="faq-heading" className="posts-section-title reveal" style={{ textAlign: 'center', marginBottom: 'var(--space-8)' }}>
-            Straight answers.
-          </h2>
-          <div className="faq-list">
-            {FAQS.map((f, i) => (
-              <details key={f.q} className="reveal faq-item" data-delay={String(i * 60)}>
-                <summary className="faq-item__q">{f.q}</summary>
-                <p className="faq-item__a">{f.a}</p>
-              </details>
-            ))}
-          </div>
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify({
-                '@context': 'https://schema.org',
-                '@type': 'FAQPage',
-                mainEntity: FAQS.map(f => ({
-                  '@type': 'Question',
-                  name: f.q,
-                  acceptedAnswer: { '@type': 'Answer', text: f.a },
-                })),
-              }),
-            }}
-          />
-        </div>
-      </section>
-
-      {/* ── GUIDES / BLOG ── */}
-      {featuredPosts.length > 0 && (
-        <section className="section" id="guides" aria-labelledby="posts-heading">
-          <div className="container">
-            <div className="posts-section-header">
-              <div>
-                <p className="section-eyebrow">Free guides</p>
-                <h2 id="posts-heading" className="posts-section-title reveal">
-                  Learn something useful, free.
-                </h2>
-              </div>
-              <Link href="/blog" className="btn btn-ghost reveal" data-delay="100">
-                All guides →
+              <p className="about-teaser__bio">
+                Six years building software inside a Fortune 100 financial company taught
+                me how systems fail at scale. Building my own products taught me how to
+                ship without a committee. You get both: senior engineering discipline and
+                the pace of someone who owns the outcome.
+              </p>
+              <ul className="why-list" role="list">
+                <li>
+                  <span aria-hidden="true">01</span>
+                  <p><strong>I speak business and code.</strong> A CS and Business Information Systems background means I map the process before I write the software.</p>
+                </li>
+                <li>
+                  <span aria-hidden="true">02</span>
+                  <p><strong>You own everything.</strong> Code, infrastructure, accounts, documentation. No proprietary lock-in, no hostage situation.</p>
+                </li>
+                <li>
+                  <span aria-hidden="true">03</span>
+                  <p><strong>Fixed price, not hourly.</strong> You approve a scope and a number. The risk of overruns is mine, not yours.</p>
+                </li>
+              </ul>
+              <Link href="/about" className="btn btn-ghost">
+                More about me
+                <span aria-hidden="true">→</span>
               </Link>
             </div>
 
-            <div className="posts-grid">
+            <div className="about-teaser__panel reveal" data-delay="120">
+              <div className="stat-grid">
+                {STATS.map(stat => (
+                  <div key={stat.label} className="stat">
+                    <span className="stat__value">{stat.value}</span>
+                    <span className="stat__label">{stat.label}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="about-teaser__quote">
+                <StarMark size={22} />
+                <p>
+                  The best automation is the one nobody notices. The work just stops
+                  taking all day.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── WRITING ──────────────────────────────────────────── */}
+      {featuredPosts.length > 0 && (
+        <section className="section section--tint" id="writing" aria-labelledby="writing-heading">
+          <div className="container">
+            <SectionHead
+              eyebrow="Notes"
+              title={<>Thinking in public.</>}
+              text="Occasional writing on systems, architecture, and the craft of building software that lasts."
+              link={{ href: '/blog', label: 'All posts' }}
+              split
+            />
+            <div className="posts-list">
               {featuredPosts.map((post, i) => (
-                <div key={post.slug} className="reveal" data-delay={String(i * 100)}>
+                <div key={post.slug} className="reveal" data-delay={String(i * 70)}>
                   <PostCard post={post} />
                 </div>
               ))}
@@ -306,201 +373,52 @@ export default async function HomePage() {
         </section>
       )}
 
-      {/* ── LEAD MAGNET ── */}
-      <section className="section section--surface" id="playbook" aria-labelledby="newsletter-heading">
+      {/* ── FINAL CTA ────────────────────────────────────────── */}
+      <section className="cta" aria-labelledby="cta-heading">
         <div className="container">
-          <div className="reveal">
-            <NewsletterForm />
-          </div>
-        </div>
-      </section>
-
-      {/* ── FINAL CTA ── */}
-      <section className="section" aria-labelledby="cta-heading">
-        <div className="container">
-          <div className="reveal final-cta">
-            <p className="section-eyebrow" style={{ textAlign: 'center' }}>Start here</p>
-            <h2 id="cta-heading" className="final-cta__title">
-              What&apos;s the one task you wish would just <em>handle itself?</em>
-            </h2>
-            <p className="final-cta__sub">
-              Tell me in 2–3 sentences. I&apos;ll reply within 1 business day with
-              the simplest fix — free.
-            </p>
-            <div className="final-cta__actions">
-              <Link href="/contact" className="btn btn-primary">
-                Get My Free Fix Assessment →
-              </Link>
-              <a
-                href="https://www.facebook.com/LimaLabsTech"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn btn-outline"
-              >
-                Message on Facebook
-              </a>
+          <div className="cta__inner">
+            <StarMark size={360} className="cta__star" />
+            <div className="cta__copy reveal">
+              <span className="status-pill status-pill--dark">
+                <span className="status-pill__dot" aria-hidden="true" />
+                {SITE.availability}
+              </span>
+              <h2 id="cta-heading">Let&apos;s delete some work.</h2>
+              <p>
+                Tell me what&apos;s taking too long. I&apos;ll tell you whether it can be
+                automated, what it would take, and what it&apos;s worth — before you spend
+                a dollar.
+              </p>
+              <div className="cta__actions">
+                <Link href="/contact" className="btn btn-light btn-lg">
+                  Start a project
+                  <span aria-hidden="true">→</span>
+                </Link>
+                <a href={`mailto:${SITE.email}`} className="cta__email">
+                  {SITE.email}
+                </a>
+              </div>
             </div>
-            <p className="final-cta__alt">
-              Or email directly: <a href="mailto:limalabsllc@gmail.com" className="link-animate">limalabsllc@gmail.com</a>
-            </p>
+
+            <div className="cta__socials">
+              {SOCIALS.map(({ label, href, value, icon }) => (
+                <a
+                  key={href}
+                  href={href}
+                  className="cta__social"
+                  target={href.startsWith('http') ? '_blank' : undefined}
+                  rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                >
+                  <span className="cta__social-icon"><SocialIcon icon={icon} size={17} /></span>
+                  <span className="cta__social-label">{label}</span>
+                  <span className="cta__social-value">{value}</span>
+                  <span className="cta__social-arrow" aria-hidden="true">↗</span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </section>
     </>
   )
 }
-
-/* ── Data ─────────────────────────────────── */
-
-const PAINS = [
-  {
-    icon: '01',
-    title: 'Hours lost to copy-paste work',
-    body: 'Re-typing orders, invoices, schedules, or follow-ups across spreadsheets and apps.',
-    fix: 'one-click automation that does it for you.',
-  },
-  {
-    icon: '02',
-    title: 'Leads slip through the cracks',
-    body: 'Missed calls, slow replies, no follow-up — customers go to whoever answers first.',
-    fix: 'AI chatbot + instant follow-up that never sleeps.',
-  },
-  {
-    icon: '03',
-    title: 'Website that doesn’t bring business',
-    body: 'Outdated, slow, or invisible on Google. Looks fine, does nothing.',
-    fix: 'fast site built to rank and convert visitors into calls.',
-  },
-  {
-    icon: '04',
-    title: 'Messy data, no clear picture',
-    body: 'Sales, inventory, or bookings scattered everywhere. Decisions by gut feeling.',
-    fix: 'simple dashboard + internal tool in one place.',
-  },
-  {
-    icon: '05',
-    title: 'Customers expect an app',
-    body: 'Repeat customers want booking, ordering, or updates from their phone.',
-    fix: 'lightweight mobile app without enterprise cost.',
-  },
-  {
-    icon: '06',
-    title: 'Tools that don’t talk to each other',
-    body: 'Stripe, QuickBooks, Gmail, CRM — disconnected, so you do the glue work.',
-    fix: 'clean integrations that sync everything.',
-  },
-]
-
-const FREEBIES = [
-  {
-    tag: 'Free call — 20 min',
-    title: 'Free Fix Assessment',
-    body: 'Show me your biggest time-drain. I map the simplest fix and what it would cost — yours to keep even if we never work together.',
-    cta: 'Claim my free call →',
-    href: '/contact',
-  },
-  {
-    tag: 'Free download',
-    title: '5 Automations Playbook',
-    body: 'The exact automations saving owners 10+ hrs/week: lead follow-up, invoicing, review requests, scheduling, FAQs.',
-    cta: 'Get the playbook →',
-    href: '#playbook',
-  },
-  {
-    tag: 'Free reading',
-    title: 'Practical guides for owners',
-    body: 'Short, jargon-free posts: when is AI worth it? How much should a website cost? What to automate first?',
-    cta: 'Read free guides →',
-    href: '/blog',
-  },
-]
-
-const SERVICES = [
-  {
-    icon: '01',
-    title: 'AI Chatbots & Support',
-    body: 'Answer common questions instantly on your site or Facebook page. Capture leads after hours. Cut repetitive support tickets in half.',
-    example: 'a dentist books appointments 24/7 without extra staff.',
-  },
-  {
-    icon: '02',
-    title: 'Workflow Automation',
-    body: 'Invoices, follow-ups, scheduling, data entry — wired together so work flows without you touching it.',
-    example: 'a contractor saves 8 hrs/week on quotes + invoicing.',
-  },
-  {
-    icon: '03',
-    title: 'Custom Web Apps',
-    body: 'Booking systems, customer portals, quote calculators, internal dashboards — built around how you actually work.',
-    example: 'a shop replaces 4 spreadsheets with one portal.',
-  },
-  {
-    icon: '04',
-    title: 'Mobile Apps for Business',
-    body: 'Ordering, loyalty, booking, or field updates — one app for iOS + Android your customers actually use.',
-    example: 'a café takes repeat orders without phone tag.',
-  },
-  {
-    icon: '05',
-    title: 'Websites That Sell',
-    body: 'Fast, mobile-first sites that rank on Google and turn visitors into calls, bookings, and sales — not just brochures.',
-    example: 'a local service doubles quote requests in 90 days.',
-  },
-  {
-    icon: '06',
-    title: 'Integrations & Dashboards',
-    body: 'Stripe, QuickBooks, CRMs, email — connected so numbers stay correct and you see the whole business at a glance.',
-    example: 'an owner checks sales + schedule in one screen.',
-  },
-]
-
-const PROCESS = [
-  {
-    title: 'Free diagnostic call',
-    body: 'You show me the pain. I tell you the simplest fix, honest cost, and whether I’m even the right person. You keep the plan either way.',
-    time: '20 min · free · no pitch',
-  },
-  {
-    title: 'Fixed-scope build',
-    body: 'Small first win, fixed price in writing. You see progress weekly and give feedback early — no big-bang surprises.',
-    time: 'Typical first win: 1–3 weeks',
-  },
-  {
-    title: 'Launch + handoff',
-    body: 'I launch it, train you in plain English, and hand over everything — code, logins, docs. Optional support plan after.',
-    time: 'You own 100% of it',
-  },
-]
-
-const STATS = [
-  { num: 'Biz + CS', label: 'Degrees — I speak revenue and code' },
-  { num: '1:1', label: 'You work directly with me, no hand-offs' },
-  { num: '24h', label: 'Response time on new inquiries' },
-]
-
-const FAQS = [
-  {
-    q: 'How much does a small project cost?',
-    a: 'Most first wins land between $500–$3,000 depending on scope: a landing site or simple automation is on the low end, a custom web or mobile app on the higher end. You always get a fixed price in writing before I start — no hourly meter running.',
-  },
-  {
-    q: 'I’m not technical. Will I understand what you’re doing?',
-    a: 'Yes — that’s the point. I explain everything in business terms: what it saves, what it earns, what it costs. You get a short video walkthrough and simple docs, not a code dump.',
-  },
-  {
-    q: 'Do I own what you build?',
-    a: '100%. Code, accounts, domains, docs — all in your name. I set everything up so you could hand it to anyone else if you wanted to.',
-  },
-  {
-    q: 'How fast can we start?',
-    a: 'Diagnostic calls usually happen within a few days. Small builds start within 1–2 weeks and first versions often ship in 1–3 weeks.',
-  },
-  {
-    q: 'What if AI / automation isn’t right for my business?',
-    a: 'I’ll tell you on the first call. If a spreadsheet or a simpler process beats custom software, I’ll say so. I’d rather earn trust than sell you something you don’t need.',
-  },
-  {
-    q: 'How do we communicate?',
-    a: 'Email at limalabsllc@gmail.com or Facebook Messenger at Lima Labs — whichever you prefer. Weekly progress updates, plain English, no ticket black holes.',
-  },
-]
